@@ -1,9 +1,11 @@
 #include <iostream>
 #include "SmartPtr.h"
+#include <string>
 
 using namespace std;
 
 int main(){
-cout << "Ground Control to Major Tom" << endl;
-return 0;
+SmartPtr<string> test_string(new string());
+*test_string = "Ground Control to Major Tom";
+cout << *test_string << endl;
 }

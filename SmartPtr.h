@@ -1,6 +1,5 @@
 // Source of code: https://www.geeksforgeeks.org/smart-pointers-cpp/
 #include <iostream>
-
 using namespace std;
 
 // A generic smart pointer class
