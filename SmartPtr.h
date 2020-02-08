@@ -1,3 +1,5 @@
+#ifndef SMARTPTR_H
+#define SMARTPTR_H
 // Source of code: https://www.geeksforgeeks.org/smart-pointers-cpp/
 #include <iostream>
 using namespace std;
@@ -23,3 +25,4 @@ public:
    // union type)
    T * operator -> () { return ptr; }
 };
+#endif
