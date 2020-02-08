@@ -9,5 +9,8 @@ int main(){
 SmartPtr<string> test_string(new string());
 *test_string = "Ground Control to Major Tom";
 cout << *test_string << endl;
+AntMap am;
+am.PrintPheroGrid();
+am.PrintStateGrid();
 return 0;
 }

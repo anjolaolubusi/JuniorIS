@@ -14,6 +14,12 @@ for (int i = 0; i < width; i++){
 	
 }
 
+for(int i = 0; i < width; i++){
+	for(int j=0;j < height; j++){
+		state_map[i][j] = "*";
+	}
+}
+
 }
 
 
@@ -53,4 +59,23 @@ return phero_map;
 
 int AntMap::GetPhero(int x, int y){
 return phero_map[x][y];
+}
+
+void AntMap::PrintPheroGrid(){
+	for( int i=0;i < width;i++){
+		for(int j=0;j < height;j++){
+			cout << phero_map[i][j] << " ";
+		}
+		cout << endl;
+	}
+}
+
+void AntMap::PrintStateGrid(){
+	for( int i=0;i < width;i++){
+		for(int j=0;j < height;j++){
+			cout << state_map[i][j] << " ";
+		}
+		cout << endl;
+	}
+
 }

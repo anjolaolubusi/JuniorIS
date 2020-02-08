@@ -21,6 +21,7 @@ public:
 	string GetState(int x, int y); // Returns the state of (x,y)
 	int** GetPheroArray(); //Returns the Array
 	int GetPhero(int x, int y); //Returns the pheromone count
-	
+	void PrintPheroGrid();
+	void PrintStateGrid();	
 };
 #endif
