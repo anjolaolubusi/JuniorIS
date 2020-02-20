@@ -5,18 +5,19 @@
 
 using namespace std;
 
-class AntMap
+class GraphMap
 {
 private:
 	int width; // Width of the grid
 	int height; // Height of the grid
 	int** phero_map; // 2 Dimenional Array of the number of pheromones
 	string** state_map; // 2 Dimenioal Array of states
+	float evap_rate; //Evapouration Rate
 
 public:
-	AntMap(); //Default constructor
-	AntMap(const int n_width,const int n_height); //Parameterized Constructor
-	~AntMap(); //Destructor
+	GraphMap(); //Default constructor
+	GraphMap(const int n_width,const int n_height); //Parameterized Constructor
+	~GraphMap(); //Destructor
 	string** GetStateArray(); //Returns the Array
 	string GetState(int x, int y); // Returns the state of (x,y)
 	int** GetPheroArray(); //Returns the Array

@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string.h>
-#include "AntMap.h"
+#include "GraphMap.h"
 
-AntMap::AntMap(){
+GraphMap::GraphMap(){
 width = 20;
 height = 20;
 phero_map = new int*[width];
@@ -23,7 +23,7 @@ for(int i = 0; i < width; i++){
 }
 
 
-AntMap::AntMap(int n_width, int n_height){
+GraphMap::GraphMap(int n_width, int n_height){
 width = n_width;
 height = n_height;
 phero_map = new int*[width];
@@ -36,7 +36,7 @@ for (int i = 0; i < width; i++){
 }
 }
 
-AntMap::~AntMap(){
+GraphMap::~GraphMap(){
 for (int i = 0; i < width; i++){
 		delete [] phero_map[i];
 		delete [] state_map[i];
@@ -45,23 +45,23 @@ delete [] phero_map;
 delete [] state_map;
 }
 
-string** AntMap::GetStateArray(){
+string** GraphMap::GetStateArray(){
 return state_map;
 }
 
-string AntMap::GetState(int x, int y){
+string GraphMap::GetState(int x, int y){
 return state_map[x][y];
 }
 
-int** AntMap::GetPheroArray(){
+int** GraphMap::GetPheroArray(){
 return phero_map;
 }
 
-int AntMap::GetPhero(int x, int y){
+int GraphMap::GetPhero(int x, int y){
 return phero_map[x][y];
 }
 
-void AntMap::PrintPheroGrid(){
+void GraphMap::PrintPheroGrid(){
 	for( int i=0;i < width;i++){
 		for(int j=0;j < height;j++){
 			cout << phero_map[i][j] << " ";
@@ -70,7 +70,7 @@ void AntMap::PrintPheroGrid(){
 	}
 }
 
-void AntMap::PrintStateGrid(){
+void GraphMap::PrintStateGrid(){
 	for( int i=0;i < width;i++){
 		for(int j=0;j < height;j++){
 			cout << state_map[i][j] << " ";
