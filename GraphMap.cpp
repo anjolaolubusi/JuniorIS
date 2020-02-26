@@ -5,17 +5,17 @@
 GraphMap::GraphMap(){
 width = 20;
 height = 20;
-phero_map = new int*[width];
+phero_map = new int*[height];
 state_map = new string*[height];
 
-for (int i = 0; i < width; i++){
-	phero_map[i] = new int[height];
-	state_map[i] = new string[height];	
+for (int i = 0; i < height; i++){
+	phero_map[i] = new int[width];
+	state_map[i] = new string[width];	
 	
 }
 
-for(int i = 0; i < width; i++){
-	for(int j=0;j < height; j++){
+for(int i = 0; i < height; i++){
+	for(int j=0;j < width; j++){
 		state_map[i][j] = "*";
 	}
 }
@@ -62,8 +62,8 @@ return phero_map[x][y];
 }
 
 void GraphMap::PrintPheroGrid(){
-	for( int i=0;i < width;i++){
-		for(int j=0;j < height;j++){
+	for( int i=0;i < height;i++){
+		for(int j=0;j < width;j++){
 			cout << phero_map[i][j] << " ";
 		}
 		cout << endl;
@@ -71,11 +71,18 @@ void GraphMap::PrintPheroGrid(){
 }
 
 void GraphMap::PrintStateGrid(){
-	for( int i=0;i < width;i++){
-		for(int j=0;j < height;j++){
+	for( int i=0;i < height;i++){
+		for(int j=0;j < width;j++){
 			cout << state_map[i][j] << " ";
 		}
 		cout << endl;
 	}
+}
 
+void GraphMap::ChangeState(const int x, const int y, const string new_state){
+	state_map[y][x] = new_state;
+}
+
+void GraphMap::ChangePhero(const int x, const int y, const int new_phero){
+	phero_map[y][x] = new_phero;
 }

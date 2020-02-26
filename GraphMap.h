@@ -19,10 +19,12 @@ public:
 	GraphMap(const int n_width,const int n_height); //Parameterized Constructor
 	~GraphMap(); //Destructor
 	string** GetStateArray(); //Returns the Array
-	string GetState(int x, int y); // Returns the state of (x,y)
+	string GetState(const int x, const int y); // Returns the state of (x,y)
 	int** GetPheroArray(); //Returns the Array
-	int GetPhero(int x, int y); //Returns the pheromone count
+	int GetPhero(const int x, const int y); //Returns the pheromone count
 	void PrintPheroGrid();
-	void PrintStateGrid();	
+	void PrintStateGrid();
+	void ChangeState(const int x, const int y, const string new_state);
+	void ChangePhero(const int x, const int y, const int new_phero);	
 };
 #endif
