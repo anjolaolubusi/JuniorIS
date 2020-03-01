@@ -1,7 +1,8 @@
 COMPILER = g++
-C_FLAGS = -g -Wall
+C_FLAGS = -g -Wall 
 EXEC = run.o
-FILES = main.cpp SmartPtr.h GraphMap.h GraphMap.cpp
+SRC_DIR = src
+FILES = $(wildcard $(SRC_DIR)/*.cpp $(SRC_DIR)/*.h)
 compile: $(FILES)
 	$(COMPILER) $(C_FLAGS) $(FILES) -o $(EXEC)
 

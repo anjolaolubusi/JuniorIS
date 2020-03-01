@@ -1,6 +1,7 @@
 #include <iostream>
-#include <string.h>
 #include "GraphMap.h"
+
+using namespace std;
 
 GraphMap::GraphMap(){
 width = 20;
