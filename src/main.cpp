@@ -13,15 +13,13 @@ SmartPtr<string> test_string(new string());
 cout << *test_string << endl;
 GraphMap am;
 am.ChangeState(5,5,"S");
+am.UpdatePhero(5,5,10,3,1);
 am.ChangeState(10,3, "N");
+am.UpdatePhero(5,5,15,5,14);
 am.ChangeState(15, 5, "F");
 am.ChangeState(10,15, "N");
-am.PrintPheroGrid();
 am.PrintStateGrid();
-PheroKey key1 = PheroKey(pair<int, int>(1,2), pair<int, int>(3,4));
-PheroKey key2 = PheroKey(pair<int, int>(6,6), pair<int, int>(7,2));
-cout << key1 << endl;
-cout << key2 << endl;
+am.PrintPheroTable();
 
 return 0;
 }

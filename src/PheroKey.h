@@ -15,6 +15,7 @@ public:
 	std::pair<int, int> GetPoint2() const;
 	bool operator ==(const PheroKey& key2);
 	friend std::ostream& operator<<(std::ostream& out, const PheroKey& key);
+	bool operator < (const PheroKey& key) const;
 };
 
 #endif

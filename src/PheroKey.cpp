@@ -1,6 +1,7 @@
 #include <iostream>
 #include "PheroKey.h"
 #include <utility>
+#include <cmath>
 
 using namespace std;
 
@@ -39,4 +40,18 @@ bool PheroKey::operator==(const PheroKey& key){
 
 ostream& operator<<(ostream& out, const PheroKey& key){
 	return out << "((" << key.GetPoint1().first << "," << key.GetPoint1().second << "),(" << key.GetPoint2().first << "," << key.GetPoint2().second << "))";
+}
+
+bool PheroKey::operator < (const PheroKey& key) const{
+	double dis1 = sqrt((this->Point1.first * this->Point1.first) + (this->Point1.second * this->Point1.second));
+	double dis2 = sqrt((this->Point2.first * this->Point2.first) + (this->Point2.second * this->Point2.second));
+	double Dis1 = ((dis1 + dis2)/2);
+	double dis3 = sqrt((key.GetPoint1().first * key.GetPoint1().first) + (key.GetPoint1().second * key.GetPoint1().second));
+	double dis4 = sqrt((key.GetPoint2().first * key.GetPoint2().first) + (key.GetPoint2().second * key.GetPoint2().second));
+	double Dis2 = ((dis3 + dis4)/2);
+	if(Dis1 < Dis2){
+	return true;
+	}else{
+	return false;
+	}
 }
