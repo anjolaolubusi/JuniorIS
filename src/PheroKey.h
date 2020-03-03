@@ -10,6 +10,7 @@ private:
 public:
 	PheroKey();
 	PheroKey(std::pair<int, int>p1, std::pair<int, int> p2);
+	PheroKey(const int x1, const int y1, const int x2, const int y2);
 	PheroKey( const PheroKey& otherkey);
 	std::pair<int, int> GetPoint1() const;
 	std::pair<int, int> GetPoint2() const;

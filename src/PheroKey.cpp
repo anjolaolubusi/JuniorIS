@@ -17,6 +17,13 @@ PheroKey::PheroKey(pair<int, int>p1, pair<int, int> p2){
 	Point2 = p2;
 }
 
+PheroKey::PheroKey(const int x1, const int y1, const int x2, const int y2){
+	Point1.first = x1;
+	Point1.second = y1;
+	Point2.first = x2;
+	Point2.second = y2;
+}
+
 PheroKey::PheroKey( const PheroKey& key2){
 	Point1 = key2.Point1;
 	Point2 = key2.Point2;

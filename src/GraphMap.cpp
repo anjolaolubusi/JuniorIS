@@ -81,6 +81,6 @@ void GraphMap::ChangeState(const int x, const int y, const string new_state){
 }
 
 void GraphMap::UpdatePhero(const int x1, const int y1, const int x2, const int y2, const double value){
-	PheroKey key = PheroKey(pair<int, int>(x1, y1), pair<int, int>(x2, y2));
+	PheroKey key = PheroKey(x1, y1, x2, y2);
 	PheroTable[key] += value;
 } 
