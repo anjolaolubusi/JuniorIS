@@ -1,7 +1,4 @@
-#include <iostream>
 #include "PheroKey.h"
-#include <utility>
-#include <cmath>
 
 using namespace std;
 
@@ -35,6 +32,10 @@ pair<int, int> PheroKey::GetPoint1() const{
 
 pair<int, int> PheroKey::GetPoint2() const{
 	return this->Point2;
+}
+
+double PheroKey::GetDistanceBetweenPoints(){
+	return sqrt( pow((Point2.first - Point1.first), 2.0) + pow((Point2.second - Point1.second), 2));
 }
 
 bool PheroKey::operator==(const PheroKey& key){

@@ -12,14 +12,15 @@ SmartPtr<string> test_string(new string());
 *test_string = "Ground Control to Major Tom";
 cout << *test_string << endl;
 GraphMap am;
-am.ChangeState(5,5,"S");
-am.UpdatePhero(5,5,10,3,1);
-am.ChangeState(10,3, "N");
-am.UpdatePhero(5,5,15,5,14);
-am.ChangeState(15, 5, "F");
-am.ChangeState(10,15, "N");
+am.SetStartNode(5,5);
+am.SetEndNode(15, 5);
+am.AddNode(5,5,10,15);
+am.AddNode(5,5,10,0);
+am.AddNode(10,0,15,5);
+am.AddNode(10,15,15,5);
 am.PrintStateGrid();
 am.PrintPheroTable();
+am.GetAllEdges(5,5);
 
 return 0;
 }

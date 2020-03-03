@@ -1,7 +1,4 @@
-#include <iostream>
 #include "GraphMap.h"
-#include <map>
-#include "PheroKey.h"
 
 using namespace std;
 
@@ -76,6 +73,16 @@ void GraphMap::PrintPheroTable(){
 	}
 }
 
+void GraphMap::AddNode(const int x1, const int y1, const int x2, const int y2){
+	PheroTable[PheroKey(x1, y1, x2, y2)] = DefaultPhero;
+	if(state_map[y1][x1] != "S" && state_map[y1][x1] != "F"){	
+		state_map[y1][x1] = "N";
+	}
+	if(state_map[y2][x2] != "S" && state_map[y2][x2] != "F"){	
+		state_map[y2][x2] = "N";
+	}
+}
+
 void GraphMap::ChangeState(const int x, const int y, const string new_state){
 	state_map[y][x] = new_state;
 }
@@ -83,4 +90,27 @@ void GraphMap::ChangeState(const int x, const int y, const string new_state){
 void GraphMap::UpdatePhero(const int x1, const int y1, const int x2, const int y2, const double value){
 	PheroKey key = PheroKey(x1, y1, x2, y2);
 	PheroTable[key] += value;
-} 
+}
+
+set<PheroKey> GraphMap::GetAllEdges(const int x1, const int y1){
+	map<PheroKey, double>::iterator itr;
+	set<PheroKey> temp_set;
+	for(itr = PheroTable.begin(); itr != PheroTable.end(); ++itr){
+		if( (itr->first.GetPoint1().first == x1 && itr->first.GetPoint1().second == y1) || (itr->first.GetPoint2().first == x1 && itr->first.GetPoint2().second == y1) ){
+			temp_set.insert(itr->first);
+		}
+	}
+	return temp_set;
+}
+
+void GraphMap::SetStartNode(const int x, const int y){
+	StartNodePos[0] = x;
+	StartNodePos[1] = y;
+	state_map[y][x] = "S";
+}
+
+void GraphMap::SetEndNode(const int x, const int y){
+	EndNodePos[0] = x;
+	EndNodePos[1] = y;
+	state_map[y][x] = "F";
+}
