@@ -4,6 +4,7 @@
 #include "PheroKey.h"
 #include <string>
 #include <map>
+#include "Ant.h"
 
 using namespace std;
 
@@ -21,6 +22,9 @@ am.AddNode(10,15,15,5);
 am.PrintStateGrid();
 am.PrintPheroTable();
 am.GetAllEdges(5,5);
+Ant anthoy = Ant(5,5);
+anthoy.MoveAnt(am.GetAllEdges(anthoy.GetX(), anthoy.GetY()), am.GetPheroTable());
+anthoy.MoveAnt(am.GetAllEdges(anthoy.GetX(), anthoy.GetY()), am.GetPheroTable());
 
 return 0;
 }

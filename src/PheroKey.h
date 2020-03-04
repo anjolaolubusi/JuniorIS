@@ -15,7 +15,7 @@ public:
 	PheroKey( const PheroKey& otherkey);
 	std::pair<int, int> GetPoint1() const;
 	std::pair<int, int> GetPoint2() const;
-	double GetDistanceBetweenPoints();
+	double GetDistanceBetweenPoints() const;
 	bool operator ==(const PheroKey& key2);
 	friend std::ostream& operator<<(std::ostream& out, const PheroKey& key);
 	bool operator < (const PheroKey& key) const;

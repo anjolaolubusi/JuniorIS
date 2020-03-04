@@ -56,6 +56,14 @@ double GraphMap::GetPhero(const int x1, const int y1, const int x2, const int y2
 	return phero;
 }
 
+pair<int,int> GraphMap::GetStartNode(){
+	return StartNodePos;
+}
+
+pair<int, int> GraphMap::GetEndNode(){
+	return EndNodePos;
+}
+
 void GraphMap::PrintStateGrid(){
 	for( int i=0;i < height;i++){
 		for(int j=0;j < width;j++){
@@ -104,13 +112,13 @@ set<PheroKey> GraphMap::GetAllEdges(const int x1, const int y1){
 }
 
 void GraphMap::SetStartNode(const int x, const int y){
-	StartNodePos[0] = x;
-	StartNodePos[1] = y;
+	StartNodePos.first = x;
+	StartNodePos.second = y;
 	state_map[y][x] = "S";
 }
 
 void GraphMap::SetEndNode(const int x, const int y){
-	EndNodePos[0] = x;
-	EndNodePos[1] = y;
+	EndNodePos.first = x;
+	EndNodePos.second = y;
 	state_map[y][x] = "F";
 }

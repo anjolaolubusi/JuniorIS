@@ -34,7 +34,7 @@ pair<int, int> PheroKey::GetPoint2() const{
 	return this->Point2;
 }
 
-double PheroKey::GetDistanceBetweenPoints(){
+double PheroKey::GetDistanceBetweenPoints() const{
 	return sqrt( pow((Point2.first - Point1.first), 2.0) + pow((Point2.second - Point1.second), 2));
 }
 

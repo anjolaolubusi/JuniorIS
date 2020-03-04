@@ -5,6 +5,7 @@
 #include <map>
 #include "PheroKey.h"
 #include <set>
+#include <utility>
 
 class GraphMap
 {
@@ -15,8 +16,8 @@ private:
 	float evap_rate; //Evapouration Rate
 	std::map<PheroKey, double> PheroTable;
 	double DefaultPhero = 1;
-	int StartNodePos[2];
-	int EndNodePos[2];
+	std::pair<int,int> StartNodePos;
+	std::pair<int,int> EndNodePos;
 
 public:
 	GraphMap(); //Default constructor
@@ -26,6 +27,8 @@ public:
 	std::string GetState(const int x, const int y) const; // Returns the state of (x,y)
 	std::map<PheroKey, double> GetPheroTable() const;
 	double GetPhero(const int x1, const int y1, const int x2, const int y2) const;
+	std::pair<int, int> GetStartNode();
+	std::pair<int, int> GetEndNode();
 	void PrintStateGrid();
 	void PrintPheroTable();
 	void AddNode(const int x1, const int y1, const int x2, const int y2);
