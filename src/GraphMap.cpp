@@ -100,6 +100,10 @@ void GraphMap::UpdatePhero(const int x1, const int y1, const int x2, const int y
 	PheroTable[key] += value;
 }
 
+void GraphMap::UpdatePhero(const PheroKey key, const double value){
+	PheroTable[key] += value;
+}
+
 set<PheroKey> GraphMap::GetAllEdges(const int x1, const int y1){
 	map<PheroKey, double>::iterator itr;
 	set<PheroKey> temp_set;

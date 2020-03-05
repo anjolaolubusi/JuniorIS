@@ -12,12 +12,27 @@ Ant::Ant(const int new_x, const int new_y){
 	y = new_y;
 }
 
+Ant::Ant(pair<int, int> p1){
+	x = p1.first;
+	y = p1.second;
+}
+
+Ant::Ant(const Ant& anthony){
+	x = anthony.x;
+	y = anthony.y;
+	nodes_visited = anthony.nodes_visited;
+}
+
 int Ant::GetX() const{
 	return x;
 }
 
 int Ant::GetY() const{
 	return y;
+}
+
+set<PheroKey> Ant::GetNodesVisited(){
+	return nodes_visited;
 }
 
 void Ant::SetX(const int new_x){
@@ -55,4 +70,20 @@ void Ant::MoveAnt(set<PheroKey> SAPE, map<PheroKey, double> pheroMap){
 	nodes_visited.insert(*itr);
 	x = itr->GetPoint2().first;
 	y = itr->GetPoint2().second;
+}
+
+void Ant::PrintVistedNodes(){
+	set<PheroKey>::iterator itr;
+	for(itr=nodes_visited.begin(); itr!=nodes_visited.end(); itr++){
+		cout << *itr << endl;
+	}
+}
+
+ostream& operator<<(ostream& out, const Ant anthony){
+	out << "x: " << anthony.x << " y: " << anthony.y << " Node Visitied: ";
+	set<PheroKey>::iterator itr;
+	for(itr=anthony.nodes_visited.begin(); itr!=anthony.nodes_visited.end(); itr++){
+		out << *itr << " ";
+	}
+	return out;
 }
