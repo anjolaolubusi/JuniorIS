@@ -1,11 +1,10 @@
 #ifndef GRAPHMAP_H
 #define GRAPHMAP_H
-#include <iostream>
+
 #include <string.h>
 #include <map>
 #include "PheroKey.h"
 #include <set>
-#include <utility>
 
 class GraphMap
 {
@@ -36,6 +35,7 @@ public:
 	void ChangeState(const int x, const int y, const std::string new_state); //Changes State of position
 	void UpdatePhero(const int x1, const int y1, const int x2, const int y2,const double value); //Changes pheromone count of variable
 	void UpdatePhero(const PheroKey key, const double value); //Changes pheromone count of variable
+	//void EvapouratePhero(const PheroKey key, const double value);
 	std::map<PheroKey, double> GetAllEdges(const int x1, const int y1); //Gets all edges around a point 
 	void SetStartNode(const int x, const int y); //Sets the start node
 	void SetEndNode(const int x, const int y); //Sets the end node

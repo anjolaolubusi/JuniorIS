@@ -2,9 +2,6 @@
 #define ANT_H
 
 #include <iostream>
-#include <string.h>
-#include <set>
-#include <map>
 #include <ctime>
 #include <cstdlib>
 #include "GraphMap.h"
@@ -26,7 +23,10 @@ public:
 	std::set<PheroKey> GetNodesVisited();
 	void SetX(const int new_x); //Sets the x position
 	void SetY(const int new_y); //Sets the y position
-	void MoveAnt(GraphMap& gmap, bool first_run=true); //Moves the ant
+	void MoveAntToEndNode(GraphMap& gmap, bool first_run=false); //Moves the ant
+	void MoveAntToStartNode(GraphMap& gmap);
+	bool IsAtNode(const int n_x, const int n_y);
+	bool IsOnKey(const PheroKey& key);
 	void PrintVistedNodes();
 	friend std::ostream& operator<<(std::ostream& out, const Ant anthony); //Output overloader
 };

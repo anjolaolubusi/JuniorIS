@@ -43,7 +43,7 @@ void Ant::SetY(const int new_y){
 	y = new_y;
 }
 
-void Ant::MoveAnt(GraphMap& gmap, bool first_run){	
+void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){	
 	map<PheroKey, double>::iterator result;
 	map<PheroKey, double> map2;
 	map2 = gmap.GetAllEdges(x, y);
@@ -86,6 +86,25 @@ void Ant::MoveAnt(GraphMap& gmap, bool first_run){
 		cum += current_prob;
 		}
 	}
+}
+
+void Ant::MoveAntToStartNode(GraphMap& gmap){
+	set<PheroKey>::reverse_iterator itr;
+	for(itr=nodes_visited.rbegin(); itr!=nodes_visited.rend(); itr++){
+		gmap.UpdatePhero(*itr, 1/(itr->GetDistanceBetweenPoints()));
+		x = itr->GetPoint1().first;
+		y = itr->GetPoint1().second;
+	}
+}
+
+bool Ant::IsAtNode(const int n_x, const int n_y){
+	return (x == n_x && y == n_y);
+}
+
+bool Ant::IsOnKey(const PheroKey& key){
+	set<PheroKey>::reverse_iterator itr;
+	itr = nodes_visited.rbegin();
+	return (itr->GetPoint1() == key.GetPoint1() && itr->GetPoint2() == key.GetPoint2());
 }
 
 void Ant::PrintVistedNodes(){
