@@ -77,6 +77,16 @@ void GraphMap::PrintPheroTable(){
 	map<PheroKey, double>::iterator itr;
 	cout << "Key\tElement\n" << endl;
 	for(itr = PheroTable.begin(); itr != PheroTable.end(); ++itr){
+		cout << itr->first << "\t";
+		printf("%f",itr->second);
+		cout << endl;
+	}
+}
+
+void GraphMap::PrintPheroTable(map<PheroKey, double> p_map){
+	map<PheroKey, double>::iterator itr;
+	cout << "Key\tElement\n" << endl;
+	for(itr = p_map.begin(); itr != p_map.end(); ++itr){
 		cout << itr->first << "\t" << itr->second << endl;
 	}
 }
@@ -104,15 +114,15 @@ void GraphMap::UpdatePhero(const PheroKey key, const double value){
 	PheroTable[key] += value;
 }
 
-set<PheroKey> GraphMap::GetAllEdges(const int x1, const int y1){
+map<PheroKey, double> GraphMap::GetAllEdges(const int x1, const int y1){
 	map<PheroKey, double>::iterator itr;
-	set<PheroKey> temp_set;
+	map<PheroKey, double> temp_map;
 	for(itr = PheroTable.begin(); itr != PheroTable.end(); ++itr){
 		if( (itr->first.GetPoint1().first == x1 && itr->first.GetPoint1().second == y1) || (itr->first.GetPoint2().first == x1 && itr->first.GetPoint2().second == y1) ){
-			temp_set.insert(itr->first);
+			temp_map[itr->first] = itr->second;
 		}
 	}
-	return temp_set;
+	return temp_map;
 }
 
 void GraphMap::SetStartNode(const int x, const int y){

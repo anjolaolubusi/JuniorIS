@@ -43,33 +43,50 @@ void Ant::SetY(const int new_y){
 	y = new_y;
 }
 
-void Ant::MoveAnt(set<PheroKey> SAPE, map<PheroKey, double> pheroMap){	
-	vector<double> pSet;
-	double TotalPhero = 0;
-	set<PheroKey>::iterator itr;
-	for(itr=SAPE.begin(); itr != SAPE.end(); ++itr){
-		if(nodes_visited.find(*itr) != nodes_visited.end()){
-			SAPE.erase(itr);
+void Ant::MoveAnt(GraphMap& gmap, bool first_run){	
+	map<PheroKey, double>::iterator result;
+	map<PheroKey, double> map2;
+	map2 = gmap.GetAllEdges(x, y);
+	set<PheroKey>::iterator choice;
+	for(choice=nodes_visited.begin(); choice!=nodes_visited.end(); choice++){
+		map2.erase(*choice);
+	}
+	if(first_run){
+		srand(time(0));
+		int choice_index = rand() % (map2.size());
+		result = map2.begin();
+		advance(result, choice_index);
+		nodes_visited.insert(PheroKey(x, y, result->first.GetPoint2().first, result->first.GetPoint2().second));
+		x = result->first.GetPoint2().first;
+		y = result->first.GetPoint2().second;
+	}else{
+		double pSet[map2.size()];
+		double TotalPhero = 0;
+		int i = 0;
+		for(result=map2.begin();result != map2.end();result++){
+			double phero_temp = gmap.GetPheroTable()[result->first] * (1/result->first.GetDistanceBetweenPoints());
+			pSet[i] = phero_temp;
+			TotalPhero += phero_temp;
+			i += 1;
+		}
+
+		double cum = 0;
+		long unsigned int ii;
+		for(ii=0; ii < sizeof(pSet)/sizeof(*pSet); ii++){
+		double current_prob = (pSet[ii]/TotalPhero);
+		srand(time(0));
+		double choice_prob = (double)rand() / (double)RAND_MAX;
+		if(choice_prob <= current_prob + cum){
+			result = map2.begin();
+			advance(result, ii);
+			nodes_visited.insert(PheroKey(x, y, result->first.GetPoint2().first, result->first.GetPoint2().second));
+			x = result->first.GetPoint2().first;
+			y = result->first.GetPoint2().second;
+			break;			
+		}
+		cum += current_prob;
 		}
 	}
-
-	for(itr= SAPE.begin(); itr != SAPE.end(); ++itr){
-		TotalPhero += pheroMap[*itr] * itr->GetDistanceBetweenPoints();
-	}
-
-	itr=SAPE.begin();
-	for(int i = 0; i < SAPE.size(); i++){
-		pSet.push_back((pheroMap[*itr] * (1/(itr->GetDistanceBetweenPoints())))/(TotalPhero));
-		itr++;
-	}
-
-	double maxIndex = std::max_element(pSet.begin(),pSet.end()) - pSet.begin();
-	itr = SAPE.begin();
-
-	advance(itr, maxIndex);
-	nodes_visited.insert(*itr);
-	x = itr->GetPoint2().first;
-	y = itr->GetPoint2().second;
 }
 
 void Ant::PrintVistedNodes(){

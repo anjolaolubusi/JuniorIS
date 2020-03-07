@@ -15,7 +15,7 @@ private:
 	std::string** state_map; // 2 Dimenioal Array of states
 	float evap_rate; //Evapouration Rate
 	std::map<PheroKey, double> PheroTable; //Map object that represents the pheromone count of all the edges of the graph
-	double DefaultPhero = 1; //Defualt pheromone number MUST NOT BE ZERO
+	double DefaultPhero = 1.0; //Defualt pheromone number MUST NOT BE ZERO
 	std::pair<int,int> StartNodePos; //Object for the position of the starting node
 	std::pair<int,int> EndNodePos; //Object for the position of the ending node
 
@@ -31,11 +31,12 @@ public:
 	std::pair<int, int> GetEndNode(); //Return position of End Node
 	void PrintStateGrid(); //Prints the State Grid
 	void PrintPheroTable(); //Print the Pheromone Table
+	void PrintPheroTable(std::map<PheroKey, double> p_map); //Print the Pheromone Table
 	void AddNode(const int x1, const int y1, const int x2, const int y2); //Adds Node to Pheronmone Table
 	void ChangeState(const int x, const int y, const std::string new_state); //Changes State of position
 	void UpdatePhero(const int x1, const int y1, const int x2, const int y2,const double value); //Changes pheromone count of variable
 	void UpdatePhero(const PheroKey key, const double value); //Changes pheromone count of variable
-	std::set<PheroKey> GetAllEdges(const int x1, const int y1); //Gets all edges around a point 
+	std::map<PheroKey, double> GetAllEdges(const int x1, const int y1); //Gets all edges around a point 
 	void SetStartNode(const int x, const int y); //Sets the start node
 	void SetEndNode(const int x, const int y); //Sets the end node
 };

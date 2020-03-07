@@ -3,12 +3,11 @@
 
 #include <iostream>
 #include <string.h>
-#include "PheroKey.h"
 #include <set>
 #include <map>
-#include <algorithm>
-#include <vector>
-#include <utility>
+#include <ctime>
+#include <cstdlib>
+#include "GraphMap.h"
 
 class Ant{
 private:
@@ -27,7 +26,7 @@ public:
 	std::set<PheroKey> GetNodesVisited();
 	void SetX(const int new_x); //Sets the x position
 	void SetY(const int new_y); //Sets the y position
-	void MoveAnt(std::set<PheroKey> SAPE, std::map<PheroKey, double> pheroMap); //Moves the ant
+	void MoveAnt(GraphMap& gmap, bool first_run=true); //Moves the ant
 	void PrintVistedNodes();
 	friend std::ostream& operator<<(std::ostream& out, const Ant anthony); //Output overloader
 };
