@@ -1,5 +1,5 @@
-#ifndef ANTMAP_H
-#define ANTMAP_H
+#ifndef GRAPHMAP_H
+#define GRAPHMAP_H
 #include <iostream>
 #include <string.h>
 #include <map>

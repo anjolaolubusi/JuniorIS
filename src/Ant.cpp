@@ -74,7 +74,6 @@ void Ant::MoveAnt(GraphMap& gmap, bool first_run){
 		long unsigned int ii;
 		for(ii=0; ii < sizeof(pSet)/sizeof(*pSet); ii++){
 		double current_prob = (pSet[ii]/TotalPhero);
-		srand(time(0));
 		double choice_prob = (double)rand() / (double)RAND_MAX;
 		if(choice_prob <= current_prob + cum){
 			result = map2.begin();
