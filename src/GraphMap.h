@@ -12,7 +12,7 @@ private:
 	int width; // Width of the grid
 	int height; // Height of the grid
 	std::string** state_map; // 2 Dimenioal Array of states
-	float evap_rate; //Evapouration Rate
+	float evap_rate = 0.5; //Evapouration Rate
 	std::map<PheroKey, double> PheroTable; //Map object that represents the pheromone count of all the edges of the graph
 	double DefaultPhero = 1.0; //Defualt pheromone number MUST NOT BE ZERO
 	std::pair<int,int> StartNodePos; //Object for the position of the starting node
@@ -35,7 +35,8 @@ public:
 	void ChangeState(const int x, const int y, const std::string new_state); //Changes State of position
 	void UpdatePhero(const int x1, const int y1, const int x2, const int y2,const double value); //Changes pheromone count of variable
 	void UpdatePhero(const PheroKey key, const double value); //Changes pheromone count of variable
-	//void EvapouratePhero(const PheroKey key, const double value);
+	void EvapouratePhero(const double value);
+	void EvapouratePhero();
 	std::map<PheroKey, double> GetAllEdges(const int x1, const int y1); //Gets all edges around a point 
 	void SetStartNode(const int x, const int y); //Sets the start node
 	void SetEndNode(const int x, const int y); //Sets the end node

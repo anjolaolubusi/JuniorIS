@@ -114,6 +114,21 @@ void GraphMap::UpdatePhero(const PheroKey key, const double value){
 	PheroTable[key] += value;
 }
 
+void GraphMap::EvapouratePhero(const double e_value){
+	map<PheroKey, double>::iterator itr;
+	for(itr = PheroTable.begin(); itr != PheroTable.end(); ++itr){
+		itr->second *= e_value;
+	}
+}
+
+
+void GraphMap::EvapouratePhero(){
+	map<PheroKey, double>::iterator itr;
+	for(itr = PheroTable.begin(); itr != PheroTable.end(); ++itr){
+		itr->second *= evap_rate;
+	}
+}
+
 map<PheroKey, double> GraphMap::GetAllEdges(const int x1, const int y1){
 	map<PheroKey, double>::iterator itr;
 	map<PheroKey, double> temp_map;

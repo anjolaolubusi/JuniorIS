@@ -22,5 +22,7 @@ anthoy.MoveAntToStartNode(am);
 anthoy.MoveAntToStartNode(am);
 am.PrintPheroTable();
 cout << anthoy << endl;
+am.EvapouratePhero();
+am.PrintPheroTable();
 return 0;
 }
