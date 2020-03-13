@@ -2,9 +2,8 @@
 #define ANT_H
 
 #include <iostream>
-#include <ctime>
-#include <cstdlib>
 #include "GraphMap.h"
+#include <random>
 
 class Ant{
 private:
@@ -27,6 +26,7 @@ public:
 	void MoveAntToStartNode(GraphMap& gmap);
 	bool IsAtNode(const int n_x, const int n_y);
 	bool IsOnKey(const PheroKey& key);
+	void EmptyNV();
 	void PrintVistedNodes();
 	friend std::ostream& operator<<(std::ostream& out, const Ant anthony); //Output overloader
 };

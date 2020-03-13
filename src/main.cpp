@@ -12,7 +12,7 @@ am.AddNode(5,5,10,0);
 am.AddNode(10,0,15,5);
 am.AddNode(10,15,15,5);
 am.PrintStateGrid();
-//am.PrintPheroTable();
+/*am.PrintPheroTable();
 Ant anthoy = Ant(5,5);
 anthoy.MoveAntToEndNode(am, true);
 anthoy.MoveAntToEndNode(am);
@@ -23,6 +23,40 @@ anthoy.MoveAntToStartNode(am);
 am.PrintPheroTable();
 cout << anthoy << endl;
 am.EvapouratePhero();
+am.PrintPheroTable();*/
+int ant_cout = 10;
+Ant ants[ant_cout];
+
+for(int i=0; i < ant_cout; i++){
+ants[i] = Ant(am.GetStartNode());
+}
+
+for(int i = 0; i < ant_cout; i++){
+ants[i].MoveAntToEndNode(am, true);
+}
+
+for(int iter = 0; iter < 10; iter++){
+for(int i = 0; i < ant_cout; i++){
+
+do{
+ants[i].MoveAntToEndNode(am);
+}while(ants[i].GetX() != am.GetEndNode().first && ants[i].GetY() != am.GetEndNode().second);
+
+}
+
+for(int i = 0; i < ant_cout; i++){
+
+do{
+ants[i].MoveAntToStartNode(am);
+}while(ants[i].GetX() != am.GetStartNode().first && ants[i].GetY() != am.GetStartNode().second);
+
+}
+}
+
+for(int i=0; i < ant_cout; i++){
+cout << ants[i] << endl;
+}
+
 am.PrintPheroTable();
 return 0;
 }

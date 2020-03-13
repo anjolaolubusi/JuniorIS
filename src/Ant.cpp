@@ -52,8 +52,10 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 		map2.erase(*choice);
 	}
 	if(first_run){
-		srand(time(0));
-		int choice_index = rand() % (map2.size());
+		random_device dev;
+		mt19937 rng(dev());
+		uniform_int_distribution<mt19937::result_type> dist(0, map2.size()-1);
+		int choice_index = dist(rng);
 		result = map2.begin();
 		advance(result, choice_index);
 		nodes_visited.insert(PheroKey(x, y, result->first.GetPoint2().first, result->first.GetPoint2().second));
@@ -74,7 +76,10 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 		long unsigned int ii;
 		for(ii=0; ii < sizeof(pSet)/sizeof(*pSet); ii++){
 		double current_prob = (pSet[ii]/TotalPhero);
-		double choice_prob = (double)rand() / (double)RAND_MAX;
+		random_device dev;
+		mt19937 rng(dev());
+		uniform_real_distribution<double> dist(0.0, 1.0);
+		double choice_prob = dist(rng);
 		if(choice_prob <= current_prob + cum){
 			result = map2.begin();
 			advance(result, ii);
@@ -91,7 +96,7 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 void Ant::MoveAntToStartNode(GraphMap& gmap){
 	set<PheroKey>::reverse_iterator itr;
 	for(itr=nodes_visited.rbegin(); itr!=nodes_visited.rend(); itr++){
-		gmap.UpdatePhero(*itr, 1/(itr->GetDistanceBetweenPoints()));
+		gmap.UpdatePhero(*itr, 5/(itr->GetDistanceBetweenPoints()));
 		x = itr->GetPoint1().first;
 		y = itr->GetPoint1().second;
 	}
@@ -112,6 +117,10 @@ void Ant::PrintVistedNodes(){
 	for(itr=nodes_visited.begin(); itr!=nodes_visited.end(); itr++){
 		cout << *itr << endl;
 	}
+}
+
+void Ant::EmptyNV(){
+	nodes_visited.clear();
 }
 
 ostream& operator<<(ostream& out, const Ant anthony){
