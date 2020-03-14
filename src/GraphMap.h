@@ -8,6 +8,8 @@
 #include "PheroKeyHash.h"
 #include <set>
 
+//TODO: Add Method to find the best path
+
 class GraphMap
 {
 private:

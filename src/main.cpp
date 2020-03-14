@@ -36,26 +36,29 @@ ants[i].MoveAntToEndNode(am, true);
 }
 
 for(int iter = 0; iter < 10; iter++){
-for(int i = 0; i < ant_cout; i++){
+	for(int i = 0; i < ant_cout; i++){
+		while(ants[i].GetX() != am.GetEndNode().first && ants[i].GetY() != am.GetEndNode().second){
+			ants[i].MoveAntToEndNode(am);
+		}
+	}
 
-do{
-ants[i].MoveAntToEndNode(am);
-}while(ants[i].GetX() != am.GetEndNode().first && ants[i].GetY() != am.GetEndNode().second);
+	for(int i = 0; i < ant_cout; i++){
+		do{
+		ants[i].MoveAntToStartNode(am);
+		}while(ants[i].GetX() != am.GetStartNode().first && ants[i].GetY() != am.GetStartNode().second);
+	}
 
-}
+	for(int i=0; i < ant_cout; i++){
+		ants[i].EmptyNV();
+	}	
 
-for(int i = 0; i < ant_cout; i++){
-
-do{
-ants[i].MoveAntToStartNode(am);
-}while(ants[i].GetX() != am.GetStartNode().first && ants[i].GetY() != am.GetStartNode().second);
-
-}
-am.EvapouratePhero();
+am.EvapouratePhero(.8);
 }
 
 for(int i=0; i < ant_cout; i++){
-cout << ants[i] << "Phero Count: " << ants[i].GetPheroCount(am) << endl;
+cout << ants[i] << "Phero Count: ";
+printf("%f", ants[i].GetPheroCount(am));
+cout << endl;
 }
 
 am.PrintPheroTable();
