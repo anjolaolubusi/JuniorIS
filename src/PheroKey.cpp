@@ -38,8 +38,8 @@ double PheroKey::GetDistanceBetweenPoints() const{
 	return sqrt( pow((Point2.first - Point1.first), 2.0) + pow((Point2.second - Point1.second), 2));
 }
 
-bool PheroKey::operator==(const PheroKey& key){
-	if((Point1 == key.GetPoint1() && Point2 == key.GetPoint2()) || (this->Point1 == key.GetPoint2() && this->Point2 == key.GetPoint1())){
+bool PheroKey::operator==(const PheroKey& key) const{
+	if((this->Point1 == key.GetPoint1() && this->Point2 == key.GetPoint2()) || (this->Point1 == key.GetPoint2() && this->Point2 == key.GetPoint1())){
 	return true;
 	} else {
 	return false;

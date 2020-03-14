@@ -31,6 +31,19 @@ int Ant::GetY() const{
 	return y;
 }
 
+double Ant::GetPheroCount(GraphMap& gmap){
+	double pCount = 0;
+	set<PheroKey>::iterator nv_itr;
+	for(nv_itr = nodes_visited.begin(); nv_itr != nodes_visited.end(); nv_itr++){
+		if(gmap.GetPhero(*nv_itr) != -1){
+		pCount += gmap.GetPhero(*nv_itr);
+		}else{
+		pCount = -1;
+		}
+	}
+	return pCount;
+}
+
 set<PheroKey> Ant::GetNodesVisited(){
 	return nodes_visited;
 }
@@ -44,8 +57,8 @@ void Ant::SetY(const int new_y){
 }
 
 void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){	
-	map<PheroKey, double>::iterator result;
-	map<PheroKey, double> map2;
+	unordered_map<PheroKey, double, PheroKeyHash>::iterator result;
+	unordered_map<PheroKey, double, PheroKeyHash> map2;
 	map2 = gmap.GetAllEdges(x, y);
 	set<PheroKey>::iterator choice;
 	for(choice=nodes_visited.begin(); choice!=nodes_visited.end(); choice++){

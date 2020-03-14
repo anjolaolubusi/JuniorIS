@@ -19,6 +19,7 @@ public:
 	Ant(const Ant& anthony); // Copy Constructor
 	int GetX() const; //Returns x position
 	int GetY() const; //Returns y position
+	double GetPheroCount(GraphMap& gmap);
 	std::set<PheroKey> GetNodesVisited();
 	void SetX(const int new_x); //Sets the x position
 	void SetY(const int new_y); //Sets the y position

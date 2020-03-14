@@ -51,10 +51,11 @@ ants[i].MoveAntToStartNode(am);
 }while(ants[i].GetX() != am.GetStartNode().first && ants[i].GetY() != am.GetStartNode().second);
 
 }
+am.EvapouratePhero();
 }
 
 for(int i=0; i < ant_cout; i++){
-cout << ants[i] << endl;
+cout << ants[i] << "Phero Count: " << ants[i].GetPheroCount(am) << endl;
 }
 
 am.PrintPheroTable();

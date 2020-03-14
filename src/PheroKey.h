@@ -17,7 +17,7 @@ public:
 	std::pair<int, int> GetPoint1() const; //Returns Point1
 	std::pair<int, int> GetPoint2() const; //Returns Point2
 	double GetDistanceBetweenPoints() const; //Returns distance between points
-	bool operator ==(const PheroKey& key2); //Operator overloader
+	bool operator ==(const PheroKey& key2) const; //Operator overloader
 	friend std::ostream& operator<<(std::ostream& out, const PheroKey& key); //Output overloader
 	bool operator < (const PheroKey& key) const; //Operator overloader
 };
