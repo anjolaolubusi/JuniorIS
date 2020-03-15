@@ -2,13 +2,10 @@
 #define GRAPHMAP_H
 
 #include <string.h>
-//#include <map>
 #include <unordered_map>
 #include "PheroKey.h"
 #include "PheroKeyHash.h"
 #include <set>
-
-//TODO: Add Method to find the best path
 
 class GraphMap
 {
@@ -45,5 +42,6 @@ public:
 	std::unordered_map<PheroKey, double, PheroKeyHash> GetAllEdges(const int x1, const int y1); //Gets all edges around a point 
 	void SetStartNode(const int x, const int y); //Sets the start node
 	void SetEndNode(const int x, const int y); //Sets the end node
+	std::set<PheroKey> FindBestPathOfIter();
 };
 #endif

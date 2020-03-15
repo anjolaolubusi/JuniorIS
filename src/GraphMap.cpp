@@ -161,3 +161,40 @@ void GraphMap::SetEndNode(const int x, const int y){
 	EndNodePos.second = y;
 	state_map[y][x] = "F";
 }
+
+set<PheroKey> GraphMap::FindBestPathOfIter(){
+	set<PheroKey> temp_set;
+	set<PheroKey>::reverse_iterator rev_itr;
+	rev_itr = temp_set.rbegin();
+	int temp_x = StartNodePos.first;
+	int temp_y = StartNodePos.second;
+	double max_tempphero = -9999999999;
+	unordered_map<PheroKey, double, PheroKeyHash>::iterator max_itr;		
+	unordered_map<PheroKey, double, PheroKeyHash> temp_edgemap = GetAllEdges(temp_x, temp_y);
+	unordered_map<PheroKey, double, PheroKeyHash>::iterator edgemap_itr;	
+	for(edgemap_itr=temp_edgemap.begin();edgemap_itr != temp_edgemap.end(); edgemap_itr++){
+		if(edgemap_itr->second > max_tempphero){
+			max_tempphero = edgemap_itr->second;
+			max_itr = edgemap_itr;
+		}
+	}
+	temp_x = max_itr->first.GetPoint2().first;
+	temp_y = max_itr->first.GetPoint2().second;
+	temp_set.insert(max_itr->first);
+	do{
+		max_tempphero = -9999999999;
+		temp_edgemap = GetAllEdges(temp_x, temp_y);
+		for(edgemap_itr=temp_edgemap.begin();edgemap_itr != temp_edgemap.end(); edgemap_itr++){
+			if(edgemap_itr->second > max_tempphero && temp_set.find(edgemap_itr->first) == temp_set.end()){
+				max_tempphero = edgemap_itr->second;
+				max_itr = edgemap_itr;
+			}
+		}
+
+		temp_x = max_itr->first.GetPoint2().first;
+		temp_y = max_itr->first.GetPoint2().second;
+		temp_set.insert(max_itr->first);
+	
+	}while(rev_itr->GetPoint2() != EndNodePos);
+	return temp_set;
+}

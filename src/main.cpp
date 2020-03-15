@@ -35,7 +35,7 @@ for(int i = 0; i < ant_cout; i++){
 ants[i].MoveAntToEndNode(am, true);
 }
 
-for(int iter = 0; iter < 10; iter++){
+for(int iter = 0; iter < 15; iter++){
 	for(int i = 0; i < ant_cout; i++){
 		while(ants[i].GetX() != am.GetEndNode().first && ants[i].GetY() != am.GetEndNode().second){
 			ants[i].MoveAntToEndNode(am);
@@ -55,12 +55,13 @@ for(int iter = 0; iter < 10; iter++){
 am.EvapouratePhero(.8);
 }
 
-for(int i=0; i < ant_cout; i++){
-cout << ants[i] << "Phero Count: ";
-printf("%f", ants[i].GetPheroCount(am));
-cout << endl;
-}
 
-am.PrintPheroTable();
+cout << "Best Path: ";
+set<PheroKey> jdhd =  am.FindBestPathOfIter();
+set<PheroKey>::iterator best_itr;
+for(best_itr=jdhd.begin(); best_itr != jdhd.end(); best_itr++){
+	cout << *best_itr << " ";
+}
+cout << endl;
 return 0;
 }
