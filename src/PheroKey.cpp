@@ -3,43 +3,44 @@
 using namespace std;
 
 PheroKey::PheroKey(){
-	pair<int, int> p1;
-	pair<int, int> p2;
-	Point1 = p1;
-	Point2 = p2;
+ x1 = y1 = x2 = y2 = 0;	
 }
 
-PheroKey::PheroKey(pair<int, int>p1, pair<int, int> p2){
-	Point1 = p1;
-	Point2 = p2;
-}
 
-PheroKey::PheroKey(const int x1, const int y1, const int x2, const int y2){
-	Point1.first = x1;
-	Point1.second = y1;
-	Point2.first = x2;
-	Point2.second = y2;
+PheroKey::PheroKey(const int x1_n, const int y1_n, const int x2_n, const int y2_n){
+	x1 = x1_n;
+	y1 = y1_n;
+	x2 = x2_n;
+	y2 = y2_n;
 }
 
 PheroKey::PheroKey( const PheroKey& key2){
-	Point1 = key2.Point1;
-	Point2 = key2.Point2;
+	 x1 = key2.x1;
+	 y1 = key2.y1;
+	 x2 = key2.x2;
+	 y2 = key2.y2;
 }
 
-pair<int, int> PheroKey::GetPoint1() const{
-	return this->Point1;
+int* PheroKey::GetPoint1() const{
+	int* p1 = new int[2];
+	p1[0] = x1;
+	p1[1] = y1;
+	return p1;
 }
 
-pair<int, int> PheroKey::GetPoint2() const{
-	return this->Point2;
+int* PheroKey::GetPoint2() const{
+	int* p2 = new int[2];
+	p2[0] = x2;
+	p2[1] = y2;
+	return p2;
 }
 
 double PheroKey::GetDistanceBetweenPoints() const{
-	return sqrt( pow((Point2.first - Point1.first), 2.0) + pow((Point2.second - Point1.second), 2));
+	return sqrt( (x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
 }
 
 bool PheroKey::operator==(const PheroKey& key) const{
-	if((this->Point1 == key.GetPoint1() && this->Point2 == key.GetPoint2()) || (this->Point1 == key.GetPoint2() && this->Point2 == key.GetPoint1())){
+	if((this->x1 == key.x1 && this->y1 == key.y1 && this->x2 == key.x2 && this->y2 == key.y2) || (this->x1 == key.x2 && this->y1 == key.y2 && this->x2 == key.x1 && this->y2 == key.y1)){
 	return true;
 	} else {
 	return false;
@@ -47,19 +48,22 @@ bool PheroKey::operator==(const PheroKey& key) const{
 }
 
 ostream& operator<<(ostream& out, const PheroKey& key){
-	return out << "((" << key.GetPoint1().first << "," << key.GetPoint1().second << "),(" << key.GetPoint2().first << "," << key.GetPoint2().second << "))";
+	return out << "((" << key.x1 << "," << key.y1 << "),(" << key.x2 << "," << key.y2 << "))";
 }
 
 bool PheroKey::operator < (const PheroKey& key) const{
-	double dis1 = sqrt((this->Point1.first * this->Point1.first) + (this->Point1.second * this->Point1.second));
-	double dis2 = sqrt((this->Point2.first * this->Point2.first) + (this->Point2.second * this->Point2.second));
+	double dis1 = sqrt((this->x1 * this->x1) + (this->y1 * this->y2));
+	double dis2 = sqrt((this->x2 * this->x2) + (this->y2 * this->y2));
 	double Dis1 = ((dis1 + dis2)/2);
-	double dis3 = sqrt((key.GetPoint1().first * key.GetPoint1().first) + (key.GetPoint1().second * key.GetPoint1().second));
-	double dis4 = sqrt((key.GetPoint2().first * key.GetPoint2().first) + (key.GetPoint2().second * key.GetPoint2().second));
+	double dis3 = sqrt((key.x1 * key.x1) + (key.y1 * key.y1));
+	double dis4 = sqrt((key.x2 * key.x2) + (key.y2 * key.y2));
 	double Dis2 = ((dis3 + dis4)/2);
 	if(Dis1 < Dis2){
 	return true;
 	}else{
 	return false;
 	}
+}
+
+PheroKey::~PheroKey(){
 }
