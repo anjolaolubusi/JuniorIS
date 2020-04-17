@@ -4,31 +4,34 @@
 #include <iostream>
 #include "GraphMap.h"
 #include <random>
+#include <algorithm>
+
 
 class Ant{
 private:
-	int x; // x position
-	int y; // y position
-	std::set<PheroKey> nodes_visited; // Set of Node Visitied
+	int ant_x; // x position
+	int ant_y; // y position
+	std::vector<PheroKey> nodes_visited; // Set of Node Visitied
 	std::string state = "A"; //String containing state
 
 public:
 	Ant(); //Default constructor
 	Ant(const int x, const int y); // Parameterized constructor
-	Ant(std::pair<int, int>p1); // Parameterized constructor
 	Ant(const Ant& anthony); // Copy Constructor
 	int GetX() const; //Returns x position
 	int GetY() const; //Returns y position
 	double GetPheroCount(GraphMap& gmap);
-	std::set<PheroKey> GetNodesVisited();
+	std::vector<PheroKey> GetNodesVisited() const;
 	void SetX(const int new_x); //Sets the x position
 	void SetY(const int new_y); //Sets the y position
-	void MoveAntToEndNode(GraphMap& gmap, bool first_run=false); //Moves the ant
-	void MoveAntToStartNode(GraphMap& gmap);
-	bool IsAtNode(const int n_x, const int n_y);
-	bool IsOnKey(const PheroKey& key);
-	void EmptyNV();
-	void PrintVistedNodes();
-	friend std::ostream& operator<<(std::ostream& out, const Ant anthony); //Output overloader
+	void MoveAntToEndNode(GraphMap& gmap, bool first_run=false); //Moves the ant to end node
+	void MoveAntToStartNode(GraphMap& gmap); //Moves the ant to the start node
+	bool IsAtNode(const int n_x, const int n_y); //Check if the ant is at a certain node
+	bool IsOnKey(const PheroKey& key); //Check if ant is on key
+	void EmptyNV(); //Empties the node visited vector
+	void PrintVistedNodes() const;
+	friend std::ostream& operator<<(std::ostream& out, const Ant& anthony); //Output overloader
+	void PrintAntInfo(GraphMap& gmap) const; //Prints the ant object with the proper pheromone count
+	~Ant();
 };
 #endif

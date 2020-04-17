@@ -3,7 +3,8 @@
 using namespace std;
 
 PheroKey::PheroKey(){
- x1 = y1 = x2 = y2 = 0;	
+ x1 = y1 = x2 = y2 = -1;
+pheroCount = 1;
 }
 
 
@@ -12,27 +13,26 @@ PheroKey::PheroKey(const int x1_n, const int y1_n, const int x2_n, const int y2_
 	y1 = y1_n;
 	x2 = x2_n;
 	y2 = y2_n;
+	pheroCount = 1;
 }
 
+PheroKey::PheroKey(const int x1_n, const int y1_n, const int x2_n, const int y2_n, const double pCount){
+	x1 = x1_n;
+	y1 = y1_n;
+	x2 = x2_n;
+	y2 = y2_n;
+	pheroCount = pCount;
+}
 PheroKey::PheroKey( const PheroKey& key2){
 	 x1 = key2.x1;
 	 y1 = key2.y1;
 	 x2 = key2.x2;
 	 y2 = key2.y2;
+	 pheroCount = key2.pheroCount;
 }
 
-int* PheroKey::GetPoint1() const{
-	int* p1 = new int[2];
-	p1[0] = x1;
-	p1[1] = y1;
-	return p1;
-}
-
-int* PheroKey::GetPoint2() const{
-	int* p2 = new int[2];
-	p2[0] = x2;
-	p2[1] = y2;
-	return p2;
+void PheroKey::UpdatePhero(double newvalue) const{
+	this->pheroCount = newvalue;
 }
 
 double PheroKey::GetDistanceBetweenPoints() const{
@@ -48,7 +48,7 @@ bool PheroKey::operator==(const PheroKey& key) const{
 }
 
 ostream& operator<<(ostream& out, const PheroKey& key){
-	return out << "((" << key.x1 << "," << key.y1 << "),(" << key.x2 << "," << key.y2 << "))";
+	return out << "((" << key.x1 << "," << key.y1 << "),(" << key.x2 << "," << key.y2 << "))" << " Pheromone Value: " << key.pheroCount;
 }
 
 bool PheroKey::operator < (const PheroKey& key) const{
@@ -67,3 +67,4 @@ bool PheroKey::operator < (const PheroKey& key) const{
 
 PheroKey::~PheroKey(){
 }
+

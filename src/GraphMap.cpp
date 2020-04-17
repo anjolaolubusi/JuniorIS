@@ -26,6 +26,20 @@ GraphMap::GraphMap(int n_width, int n_height){
 	}
 }
 
+GraphMap::GraphMap(const GraphMap& gMap2){
+	width = gMap2.width;
+	height = gMap2.height;
+	state_map = gMap2.state_map;
+	evap_rate = gMap2.evap_rate;
+	DefaultPhero = gMap2.DefaultPhero;
+	PheroTable = gMap2.PheroTable;
+	StartX = gMap2.StartX;
+	StartY = gMap2.StartY;
+	EndX = gMap2.EndX;
+	EndY = gMap2.EndY;
+
+}
+
 GraphMap::~GraphMap(){
 	 for (int i = 0; i < width; i++){
 		delete [] state_map[i];
@@ -41,38 +55,47 @@ string GraphMap::GetState(int x, int y) const{
 	return state_map[x][y];
 }
 
-unordered_map<PheroKey, double, PheroKeyHash> GraphMap::GetPheroTable() const{
+vector<PheroKey> GraphMap::GetPheroTable() const{
 	return PheroTable;
 }
 
 double GraphMap::GetPhero(const int x1, const int y1, const int x2, const int y2) const{
-	PheroKey key = PheroKey(pair<int, int>(x1, y1), pair<int, int>(x2, y2));
-	double phero;
-	try{
-		phero = PheroTable.at(key);
-	}catch(out_of_range){
-		phero = -1;
+	PheroKey key = PheroKey(x1,y1, x2, y2);
+	vector<PheroKey>::const_iterator key_itr;
+	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++){
+		if(*key_itr == key){
+			break;
+		}
 	}
-	return phero;
+	return key_itr->pheroCount;
 }
 
-double GraphMap::GetPhero(const PheroKey key) const{
-	double phero;
-	try{
-		phero = PheroTable.at(key);
-	}catch(out_of_range){
-		phero = -1;
+double GraphMap::GetPhero(const PheroKey& key) const{
+	vector<PheroKey>::const_iterator key_itr;
+	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++){
+		if(*key_itr == key){
+			break;
+		}
 	}
-	return phero;
+	return key_itr->pheroCount;
 }
 
-pair<int,int> GraphMap::GetStartNode(){
-	return StartNodePos;
+int GraphMap::GetStartX(){
+	return StartX;
 }
 
-pair<int, int> GraphMap::GetEndNode(){
-	return EndNodePos;
+int GraphMap::GetStartY(){
+	return StartY;
 }
+
+int GraphMap::GetEndX(){
+	return EndX;
+}
+
+int GraphMap::GetEndY(){
+	return EndY;
+}
+
 
 void GraphMap::PrintStateGrid(){
 	for( int i=0;i < height;i++){
@@ -84,25 +107,21 @@ void GraphMap::PrintStateGrid(){
 }
 
 void GraphMap::PrintPheroTable(){
-	unordered_map<PheroKey, double, PheroKeyHash>::iterator itr;
-	cout << "Key\tElement\n" << endl;
-	for(itr = PheroTable.begin(); itr != PheroTable.end(); ++itr){
-		cout << itr->first << "\t";
-		printf("%f",itr->second);
-		cout << endl;
-	}
+	vector<PheroKey>::iterator key_itr;
+	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++ ){
+		cout << *key_itr << " " << endl;
+	}	
 }
 
-void GraphMap::PrintPheroTable(unordered_map<PheroKey, double, PheroKeyHash> p_map){
-	unordered_map<PheroKey, double, PheroKeyHash>::iterator itr;
-	cout << "Key\tElement\n" << endl;
-	for(itr = p_map.begin(); itr != p_map.end(); ++itr){
-		cout << itr->first << "\t" << itr->second << endl;
-	}
+void GraphMap::PrintPheroTable( vector<PheroKey> p_map){
+	vector<PheroKey>::iterator key_itr;
+	for(key_itr=p_map.begin(); key_itr != p_map.end(); key_itr++ ){
+		cout << *key_itr << " " << endl;
+	}	
 }
 
 void GraphMap::AddNode(const int x1, const int y1, const int x2, const int y2){
-	PheroTable[PheroKey(x1, y1, x2, y2)] = DefaultPhero;
+	PheroTable.push_back(PheroKey(x1,y1,x2,y2));
 	if(state_map[y1][x1] != "S" && state_map[y1][x1] != "F"){	
 		state_map[y1][x1] = "N";
 	}
@@ -117,84 +136,69 @@ void GraphMap::ChangeState(const int x, const int y, const string new_state){
 
 void GraphMap::UpdatePhero(const int x1, const int y1, const int x2, const int y2, const double value){
 	PheroKey key = PheroKey(x1, y1, x2, y2);
-	PheroTable[key] += value;
+	vector<PheroKey>::iterator key_itr;
+	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++){
+		if(*key_itr == key){
+			break;
+		}
+	}
+	key_itr->UpdatePhero(value);	
 }
 
 void GraphMap::UpdatePhero(const PheroKey key, const double value){
-	PheroTable[key] += value;
+	vector<PheroKey>::iterator key_itr;
+	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++){
+		if(*key_itr == key){
+			break;
+		}
+	}
+	key_itr->UpdatePhero(value);	
 }
 
 void GraphMap::EvapouratePhero(const double e_value){
-	unordered_map<PheroKey, double>::iterator itr;
-	for(itr = PheroTable.begin(); itr != PheroTable.end(); ++itr){
-		itr->second *= e_value;
-	}
+	vector<PheroKey>::iterator key_itr;
+	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++ ){
+		key_itr->UpdatePhero(key_itr->pheroCount * (1 - e_value));
+	}	
 }
 
 
 void GraphMap::EvapouratePhero(){
-	unordered_map<PheroKey, double>::iterator itr;
-	for(itr = PheroTable.begin(); itr != PheroTable.end(); ++itr){
-		itr->second *= evap_rate;
-	}
+	vector<PheroKey>::iterator key_itr;
+	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++ ){
+		key_itr->UpdatePhero(key_itr->pheroCount * (1 - evap_rate));
+	}	
 }
 
-unordered_map<PheroKey, double, PheroKeyHash> GraphMap::GetAllEdges(const int x1, const int y1){
-	unordered_map<PheroKey, double, PheroKeyHash>::iterator itr;
-	unordered_map<PheroKey, double, PheroKeyHash> temp_map;
-	for(itr = PheroTable.begin(); itr != PheroTable.end(); ++itr){
-		if( (itr->first.GetPoint1().first == x1 && itr->first.GetPoint1().second == y1) || (itr->first.GetPoint2().first == x1 && itr->first.GetPoint2().second == y1) ){
-			temp_map[itr->first] = itr->second;
+vector<PheroKey> GraphMap::GetAllEdges(const int x1, const int y1){
+	vector<PheroKey> temp_table;
+	vector<PheroKey>::iterator key_itr;
+	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++ ){
+		if((key_itr->x1 == x1 && key_itr->y1 == y1) || (key_itr->x2 == x1 && key_itr->y2 == y1)){
+			temp_table.emplace_back(*key_itr);
 		}
 	}
-	return temp_map;
+	return temp_table;	
 }
 
 void GraphMap::SetStartNode(const int x, const int y){
-	StartNodePos.first = x;
-	StartNodePos.second = y;
+	StartX = x;
+	StartY = y;
 	state_map[y][x] = "S";
 }
 
 void GraphMap::SetEndNode(const int x, const int y){
-	EndNodePos.first = x;
-	EndNodePos.second = y;
+	EndX = x;
+	EndY = y;
 	state_map[y][x] = "F";
 }
 
-set<PheroKey> GraphMap::FindBestPathOfIter(){
-	set<PheroKey> temp_set;
-	set<PheroKey>::reverse_iterator rev_itr;
-	rev_itr = temp_set.rbegin();
-	int temp_x = StartNodePos.first;
-	int temp_y = StartNodePos.second;
-	double max_tempphero = -9999999999;
-	unordered_map<PheroKey, double, PheroKeyHash>::iterator max_itr;		
-	unordered_map<PheroKey, double, PheroKeyHash> temp_edgemap = GetAllEdges(temp_x, temp_y);
-	unordered_map<PheroKey, double, PheroKeyHash>::iterator edgemap_itr;	
-	for(edgemap_itr=temp_edgemap.begin();edgemap_itr != temp_edgemap.end(); edgemap_itr++){
-		if(edgemap_itr->second > max_tempphero){
-			max_tempphero = edgemap_itr->second;
-			max_itr = edgemap_itr;
+void GraphMap::RemoveEdge(const PheroKey& key){
+	vector<PheroKey>::iterator key_itr;
+	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++){
+		if(*key_itr == key){
+			break;
 		}
 	}
-	temp_x = max_itr->first.GetPoint2().first;
-	temp_y = max_itr->first.GetPoint2().second;
-	temp_set.insert(max_itr->first);
-	do{
-		max_tempphero = -9999999999;
-		temp_edgemap = GetAllEdges(temp_x, temp_y);
-		for(edgemap_itr=temp_edgemap.begin();edgemap_itr != temp_edgemap.end(); edgemap_itr++){
-			if(edgemap_itr->second > max_tempphero && temp_set.find(edgemap_itr->first) == temp_set.end()){
-				max_tempphero = edgemap_itr->second;
-				max_itr = edgemap_itr;
-			}
-		}
-
-		temp_x = max_itr->first.GetPoint2().first;
-		temp_y = max_itr->first.GetPoint2().second;
-		temp_set.insert(max_itr->first);
-	
-	}while(rev_itr->GetPoint2() != EndNodePos);
-	return temp_set;
+	PheroTable.erase(key_itr);
 }
