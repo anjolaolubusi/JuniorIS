@@ -18,6 +18,8 @@ private:
 	int StartY = -1; //Initial Start Node Y-Coordinate
 	int EndX = -1; //Initial End Node X-Coordinate
 	int EndY = -1; //Initial End Node Y-Coordinate
+	double MinPhero = 0.5;
+	double MaxPhero = 10;
 
 public:
 	GraphMap(); //Default constructor

@@ -67,7 +67,7 @@ double GraphMap::GetPhero(const int x1, const int y1, const int x2, const int y2
 			break;
 		}
 	}
-	return key_itr->pheroCount;
+	return key_itr->GetPhero();
 }
 
 double GraphMap::GetPhero(const PheroKey& key) const{
@@ -77,7 +77,7 @@ double GraphMap::GetPhero(const PheroKey& key) const{
 			break;
 		}
 	}
-	return key_itr->pheroCount;
+	return key_itr->GetPhero();
 }
 
 int GraphMap::GetStartX(){
@@ -121,7 +121,7 @@ void GraphMap::PrintPheroTable( vector<PheroKey> p_map){
 }
 
 void GraphMap::AddNode(const int x1, const int y1, const int x2, const int y2){
-	PheroTable.push_back(PheroKey(x1,y1,x2,y2));
+	PheroTable.push_back(PheroKey(x1,y1,x2,y2, MaxPhero));
 	if(state_map[y1][x1] != "S" && state_map[y1][x1] != "F"){	
 		state_map[y1][x1] = "N";
 	}
@@ -152,13 +152,20 @@ void GraphMap::UpdatePhero(const PheroKey key, const double value){
 			break;
 		}
 	}
-	key_itr->UpdatePhero(value);	
+	if(MinPhero <= value && value <= MaxPhero){
+		key_itr->UpdatePhero(value);	
+	}
 }
 
 void GraphMap::EvapouratePhero(const double e_value){
 	vector<PheroKey>::iterator key_itr;
 	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++ ){
-		key_itr->UpdatePhero(key_itr->pheroCount * (1 - e_value));
+		double NewPheroValue = key_itr->GetPhero() * (1 - e_value);
+		if(MinPhero <= NewPheroValue){	
+			key_itr->UpdatePhero(NewPheroValue);
+		}else{
+			key_itr->UpdatePhero(MaxPhero);
+		}
 	}	
 }
 
@@ -166,7 +173,12 @@ void GraphMap::EvapouratePhero(const double e_value){
 void GraphMap::EvapouratePhero(){
 	vector<PheroKey>::iterator key_itr;
 	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++ ){
-		key_itr->UpdatePhero(key_itr->pheroCount * (1 - evap_rate));
+		double NewPheroValue = key_itr->GetPhero() * (1 - evap_rate);
+		if(MinPhero <= NewPheroValue){	
+			key_itr->UpdatePhero(NewPheroValue);
+		}else{
+			key_itr->UpdatePhero(MaxPhero);
+		}
 	}	
 }
 
@@ -174,7 +186,7 @@ vector<PheroKey> GraphMap::GetAllEdges(const int x1, const int y1){
 	vector<PheroKey> temp_table;
 	vector<PheroKey>::iterator key_itr;
 	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++ ){
-		if((key_itr->x1 == x1 && key_itr->y1 == y1) || (key_itr->x2 == x1 && key_itr->y2 == y1)){
+		if((key_itr->GetX1() == x1 && key_itr->GetY1() == y1) || (key_itr->GetX2() == x1 && key_itr->GetY2() == y1)){
 			temp_table.emplace_back(*key_itr);
 		}
 	}

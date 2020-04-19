@@ -16,19 +16,6 @@ am.PrintStateGrid();
 am.PrintPheroTable();
 cout << endl;
 
-/*am.PrintPheroTable();
-Ant anthoy = Ant(5,5);
-anthoy.MoveAntToEndNode(am, true);
-anthoy.MoveAntToEndNode(am);
-cout << anthoy << endl;
-am.PrintPheroTable();
-anthoy.MoveAntToStartNode(am);
-anthoy.MoveAntToStartNode(am);
-am.PrintPheroTable();
-cout << anthoy << endl;
-am.EvapouratePhero();
-am.PrintPheroTable();
-*/
 int ant_cout = 2;
 Ant ants[ant_cout];
 
@@ -36,12 +23,12 @@ Ant ants[ant_cout];
 
 for (int i=0; i < ant_cout; i++){
 	ants[i] = Ant(am.GetStartX(), am.GetStartY());
-	cout << "DD" << endl;
 	ants[i].MoveAntToEndNode(am, true);
 	while(ants[i].GetX() != am.GetEndX() && ants[i].GetY() != am.GetEndY()){
 	ants[i].MoveAntToEndNode(am);
 	}
 	ants[i].PrintAntInfo(am);
+
 }
 
 //}

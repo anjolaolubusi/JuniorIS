@@ -16,7 +16,7 @@ Ant::Ant(const int new_x, const int new_y){
 Ant::Ant(const Ant& anthony){
 	ant_x = anthony.ant_x;
 	ant_y = anthony.ant_y;
-	nodes_visited = anthony.nodes_visited;
+	keys_visited = anthony.keys_visited;
 }
 
 int Ant::GetX() const{
@@ -30,7 +30,7 @@ int Ant::GetY() const{
 double Ant::GetPheroCount(GraphMap& gmap){
 	double pCount = 0;
 	vector<PheroKey>::iterator nv_itr;
-	for(nv_itr = nodes_visited.begin(); nv_itr != nodes_visited.end(); nv_itr++){
+	for(nv_itr = keys_visited.begin(); nv_itr != keys_visited.end(); nv_itr++){
 		if(gmap.GetPhero(*nv_itr) != -1){
 		pCount += gmap.GetPhero(*nv_itr);
 		}else{
@@ -40,8 +40,8 @@ double Ant::GetPheroCount(GraphMap& gmap){
 	return pCount;
 }
 
-vector<PheroKey> Ant::GetNodesVisited() const{
-	return nodes_visited;
+vector<PheroKey> Ant::GetKeysVisited() const{
+	return keys_visited;
 }
 
 void Ant::SetX(const int new_x){
@@ -54,28 +54,30 @@ void Ant::SetY(const int new_y){
 
 void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){	
 	vector<PheroKey>::iterator result;
-	vector<PheroKey> map2;
-	map2 = gmap.GetAllEdges(ant_x, ant_y);
+	vector<PheroKey> PossibleEdges;
+	PossibleEdges = gmap.GetAllEdges(ant_x, ant_y);
 	vector<PheroKey>::iterator choice;
-	for(choice=nodes_visited.begin(); choice!=nodes_visited.end(); choice++){
-		vector<PheroKey>::iterator temp_remover = find(map2.begin(), map2.end(), *choice);
-		map2.erase(temp_remover);
+	for(choice=keys_visited.begin(); choice!=keys_visited.end(); choice++){
+		vector<PheroKey>::iterator temp_remover;
+		for(temp_remover=PossibleEdges.begin(); temp_remover != PossibleEdges.end(); temp_remover++){
+			PossibleEdges.erase(temp_remover);
+		}
 	}
 	if(first_run){
 		random_device dev;
 		mt19937 rng(dev());
-		uniform_int_distribution<mt19937::result_type> dist(0, map2.size()-1);
+		uniform_int_distribution<mt19937::result_type> dist(0, PossibleEdges.size()-1);
 		int choice_index = dist(rng);
-		result = map2.begin();
+		result = PossibleEdges.begin();
 		advance(result, choice_index);
-		nodes_visited.push_back(PheroKey(ant_x, ant_y, result->x2, result->y2));
-		ant_x = result->x2;
-		ant_y = result->y2;
+		keys_visited.push_back(PheroKey(ant_x, ant_y, result->GetX2(), result->GetY2()));
+		ant_x = result->GetX2();
+		ant_y = result->GetY2();
 	}else{
-		double pSet[map2.size()];
+		double pSet[PossibleEdges.size()];
 		double TotalPhero = 0;
 		int i = 0;
-		for(result=map2.begin();result != map2.end();result++){
+		for(result=PossibleEdges.begin();result != PossibleEdges.end();result++){
 			double phero_temp = gmap.GetPhero(*result) * (1/result->GetDistanceBetweenPoints());
 			pSet[i] = phero_temp;
 			TotalPhero += phero_temp;
@@ -91,11 +93,11 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 		uniform_real_distribution<double> dist(0.0, 1.0);
 		double choice_prob = dist(rng);
 		if(choice_prob <= current_prob + cum){
-			result = map2.begin();
+			result = PossibleEdges.begin();
 			advance(result, ii);
-			nodes_visited.push_back(PheroKey(ant_x, ant_y, result->x2, result->y2));
-			ant_x = result->x2;
-			ant_y = result->y2;
+			keys_visited.push_back(PheroKey(ant_x, ant_y, result->GetX2(), result->GetY2()));
+			ant_x = result->GetX2();
+			ant_y = result->GetY2();
 			break;
 		}
 		cum += current_prob;
@@ -105,11 +107,11 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 
 void Ant::MoveAntToStartNode(GraphMap& gmap){
 	vector<PheroKey>::reverse_iterator itr;
-	for(itr=nodes_visited.rbegin(); itr!=nodes_visited.rend(); itr++){
+	for(itr=keys_visited.rbegin(); itr!=keys_visited.rend(); itr++){
 		gmap.UpdatePhero(*itr, 5/(itr->GetDistanceBetweenPoints()));
-		ant_x = itr->x1;
-		ant_y = itr->y1;
 	}
+	ant_x = gmap.GetStartX();	
+	ant_y = gmap.GetStartY();
 }
 
 bool Ant::IsAtNode(const int n_x, const int n_y){
@@ -118,32 +120,32 @@ bool Ant::IsAtNode(const int n_x, const int n_y){
 
 bool Ant::IsOnKey(const PheroKey& key){
 	vector<PheroKey>::reverse_iterator itr;
-	itr = nodes_visited.rbegin();
-	return (itr->x1 == key.x1 && itr->x2 == key.x2);
+	itr = keys_visited.rbegin();
+	return (*itr == key);
 }
 
-void Ant::PrintVistedNodes() const{
+void Ant::PrintVistedKeys() const{
 	vector<PheroKey>::const_iterator itr;
-	for(itr=nodes_visited.begin(); itr!=nodes_visited.end(); itr++){
+	for(itr=keys_visited.begin(); itr!=keys_visited.end(); itr++){
 		cout << *itr << endl;
 	}
 }
 
-void Ant::EmptyNV(){
-	nodes_visited.clear();
+void Ant::EmptyKV(){
+	keys_visited.clear();
 }
 
 ostream& operator<<(ostream& out, const Ant& anthony){
 	out << "x: " << anthony.GetX() << " y: " << anthony.GetY() << " Node Visitied: " << endl;
-	anthony.PrintVistedNodes();
+	anthony.PrintVistedKeys();
 	return out;
 }
 
 void Ant::PrintAntInfo(GraphMap& gmap) const{
 	cout << "x: " << ant_x << " y: " << ant_y << " Node Visitied: " << endl;
 	vector<PheroKey>::const_iterator itr;
-	for(itr=nodes_visited.begin(); itr!=nodes_visited.end(); itr++){
-		cout << "((" << itr->x1 << "," << itr->y1 << "),(" << itr->x2 << "," << itr->y2 << ") Pheronmone Value: " << gmap.GetPhero(*itr) << endl;
+	for(itr=keys_visited.begin(); itr!=keys_visited.end(); itr++){
+		cout << "((" << itr->GetX1() << "," << itr->GetY1() << "),(" << itr->GetX2() << "," << itr->GetY2() << ") Pheronmone Value: " << gmap.GetPhero(*itr) << endl;
 	}
 }
 

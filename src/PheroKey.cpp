@@ -39,6 +39,27 @@ double PheroKey::GetDistanceBetweenPoints() const{
 	return sqrt( (x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
 }
 
+int PheroKey::GetX1() const{
+	return x1;
+}
+
+
+int PheroKey::GetX2() const{
+	return x2;
+}
+
+int PheroKey::GetY1() const{
+	return y1;
+}
+
+int PheroKey::GetY2() const{
+	return y2;
+}
+
+double PheroKey::GetPhero() const{
+	return pheroCount;
+}
+
 bool PheroKey::operator==(const PheroKey& key) const{
 	if((this->x1 == key.x1 && this->y1 == key.y1 && this->x2 == key.x2 && this->y2 == key.y2) || (this->x1 == key.x2 && this->y1 == key.y2 && this->x2 == key.x1 && this->y2 == key.y1)){
 	return true;
@@ -52,13 +73,9 @@ ostream& operator<<(ostream& out, const PheroKey& key){
 }
 
 bool PheroKey::operator < (const PheroKey& key) const{
-	double dis1 = sqrt((this->x1 * this->x1) + (this->y1 * this->y2));
-	double dis2 = sqrt((this->x2 * this->x2) + (this->y2 * this->y2));
-	double Dis1 = ((dis1 + dis2)/2);
-	double dis3 = sqrt((key.x1 * key.x1) + (key.y1 * key.y1));
-	double dis4 = sqrt((key.x2 * key.x2) + (key.y2 * key.y2));
-	double Dis2 = ((dis3 + dis4)/2);
-	if(Dis1 < Dis2){
+	double dis1 = sqrt((this->x1 * this->x1) + (this->y1 * this->y2)) + sqrt((this->x2 * this->x2) + (this->y2 * this->y2));
+	double dis2 = sqrt((key.x1 * key.x1) + (key.y1 * key.y1)) + sqrt((key.x2 * key.x2) + (key.y2 * key.y2));
+	if(dis1/2.0 < dis2/2.0){
 	return true;
 	}else{
 	return false;
