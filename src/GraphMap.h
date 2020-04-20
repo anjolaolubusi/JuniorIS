@@ -43,7 +43,8 @@ public:
 	void PrintStateGrid(); //Prints the State Grid
 	void PrintPheroTable(); //Print the Pheromone Table
 	void PrintPheroTable(std::vector<std::shared_ptr<PheroKey>> p_map); //Print the Pheromone Table
-	void AddNode(const int x1, const int y1, const int x2, const int y2); //Adds Node to Pheronmone Table
+	void AddEdge(const int x1, const int y1, const int x2, const int y2); //Adds Node to Pheronmone Table
+	void AddEdge(const PheroKey& key); //Adds Node to Pheronmone Table
 	void ChangeState(const int x, const int y, const std::string new_state); //Changes State of position
 	void UpdatePhero(int iter_number);
 	void EvapouratePhero(const double value); //Evapourates Table by specified evapouration value

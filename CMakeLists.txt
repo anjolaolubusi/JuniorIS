@@ -6,15 +6,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 project(MMAS-VIS VERSION 1.0.0)
 find_package(glfw3 3.3 REQUIRED)
 
+file(GLOB project_src
+		"src/*.h"
+		"src/*.cpp"
+	)
+
 add_executable(
 	run.o
-	src/main.cpp
-	src/PheroKey.cpp
-	src/PheroKey.h
-	src/GraphMap.cpp
-	src/GraphMap.h
-	src/Ant.cpp
-	src/Ant.h
+	${project_src}
 	)
 
 

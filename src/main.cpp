@@ -1,24 +1,29 @@
-#include "GraphMap.h"
-#include "Ant.h"
+#include "MMAS.h"
 
 using namespace std;
 
+//TODO: Added Error Checks
 
 int main(void){
 
-GraphMap am;
+
+MMAS am;
 am.SetStartNode(5,5);
 am.SetEndNode(15, 5);
-am.AddNode(5,5,10,15);
-am.AddNode(5,5,10,0);
-am.AddNode(10,0,15,5);
-am.AddNode(10,15,15,5);
+am.AddEdge(5,5,10,15);
+am.AddEdge(5,5,10,0);
+am.AddEdge(10,0,15,5);
+am.AddEdge(10,15,15,5);
 am.PrintStateGrid();
 am.PrintPheroTable();
 cout << endl;
 
-int ant_cout = 100;
-Ant ants[ant_cout];
+
+am.StartAlgorithm();
+/*int ant_cout = 100;
+//Ant ants[ant_cout];
+Ant *ants = NULL;
+ants = new Ant[ant_cout]();
 
 for(int inter = 0; inter < 50; inter++){
 
@@ -57,6 +62,7 @@ for(int i=0; i < ant_cout; i++){
 cout << "FINAL"  << endl;
 am.PrintPheroTable();
 
+*/
 
 /*
 cout << "Best Path: ";
@@ -68,6 +74,7 @@ for(best_itr=jdhd.begin(); best_itr != jdhd.end(); best_itr++){
 cout << endl;
 */
 
+//delete [] ants;
 
 cout << "FIN" << endl;
 return 0;

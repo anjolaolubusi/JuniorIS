@@ -125,7 +125,7 @@ void GraphMap::PrintPheroTable( vector<shared_ptr<PheroKey>> p_map){
 	}	
 }
 
-void GraphMap::AddNode(const int x1, const int y1, const int x2, const int y2){
+void GraphMap::AddEdge(const int x1, const int y1, const int x2, const int y2){
 	PheroTable.push_back(make_shared<PheroKey>(x1,y1,x2,y2, MaxPhero));
 	if(state_map[y1][x1] != "S" && state_map[y1][x1] != "F"){	
 		state_map[y1][x1] = "N";
@@ -135,6 +135,15 @@ void GraphMap::AddNode(const int x1, const int y1, const int x2, const int y2){
 	}
 }
 
+void GraphMap::AddEdge(const PheroKey& key){
+	PheroTable.push_back(make_shared<PheroKey>(key.GetX1(),key.GetX2(),key.GetY1(),key.GetY2(), key.GetPhero()));
+	if(state_map[key.GetY1()][key.GetX1()] != "S" && state_map[key.GetY1()][key.GetX1()] != "F"){	
+		state_map[key.GetY1()][key.GetX1()] = "N";
+	}
+	if(state_map[key.GetY2()][key.GetX2()] != "S" && state_map[key.GetY2()][key.GetX2()] != "F"){	
+		state_map[key.GetY2()][key.GetX2()] = "N";
+	}
+}
 void GraphMap::ChangeState(const int x, const int y, const string new_state){
 	state_map[y][x] = new_state;
 }
