@@ -16,10 +16,10 @@ am.PrintStateGrid();
 am.PrintPheroTable();
 cout << endl;
 
-int ant_cout = 2;
+int ant_cout = 100;
 Ant ants[ant_cout];
 
-//for(int inter = 0; inter < 1; inter++){
+for(int inter = 0; inter < 50; inter++){
 
 for (int i=0; i < ant_cout; i++){
 	ants[i] = Ant(am.GetStartX(), am.GetStartY());
@@ -27,14 +27,34 @@ for (int i=0; i < ant_cout; i++){
 	while(ants[i].GetX() != am.GetEndX() && ants[i].GetY() != am.GetEndY()){
 	ants[i].MoveAntToEndNode(am);
 	}
-	ants[i].PrintAntInfo(am);
 
 }
 
-//}
+//Add logic to get best path of iteration
 
+int choice_index = -1;
+double MaxInfo = -99999.0;
+double test_value = 0;
+for(int i =0; i < ant_cout; i++){
+	test_value = ants[i].GetValueOfPath();
+	if(MaxInfo < test_value){
+		MaxInfo = test_value;
+		choice_index = i;
+	}
+}
 
+am.SetBestPath(ants[choice_index].GetKeysVisited());
+am.EvapouratePhero();
+am.UpdatePhero(inter);
 
+for(int i=0; i < ant_cout; i++){
+	ants[i].EmptyKV();
+}
+
+}
+
+cout << "FINAL"  << endl;
+am.PrintPheroTable();
 
 /*
 cout << "Best Path: ";
@@ -45,7 +65,6 @@ for(best_itr=jdhd.begin(); best_itr != jdhd.end(); best_itr++){
 }
 cout << endl;
 */
-
 
 cout << "FIN" << endl;
 return 0;

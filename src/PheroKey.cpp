@@ -4,17 +4,17 @@ using namespace std;
 
 PheroKey::PheroKey(){
  x1 = y1 = x2 = y2 = -1;
-pheroCount = 1;
+pheroCount = 10;
 }
 
 
-PheroKey::PheroKey(const int x1_n, const int y1_n, const int x2_n, const int y2_n){
+/*PheroKey::PheroKey(const int x1_n, const int y1_n, const int x2_n, const int y2_n){
 	x1 = x1_n;
 	y1 = y1_n;
 	x2 = x2_n;
 	y2 = y2_n;
-	pheroCount = 1;
-}
+	pheroCount = 10;
+}*/
 
 PheroKey::PheroKey(const int x1_n, const int y1_n, const int x2_n, const int y2_n, const double pCount){
 	x1 = x1_n;
@@ -32,6 +32,11 @@ PheroKey::PheroKey( const PheroKey& key2){
 }
 
 void PheroKey::UpdatePhero(double newvalue) const{
+	this->pheroCount = this->pheroCount + newvalue;
+}
+
+
+void PheroKey::ReplacePhero(double newvalue) const{
 	this->pheroCount = newvalue;
 }
 
@@ -69,7 +74,7 @@ bool PheroKey::operator==(const PheroKey& key) const{
 }
 
 ostream& operator<<(ostream& out, const PheroKey& key){
-	return out << "((" << key.x1 << "," << key.y1 << "),(" << key.x2 << "," << key.y2 << "))" << " Pheromone Value: " << key.pheroCount;
+	return out << "((" << key.x1 << "," << key.y1 << "),(" << key.x2 << "," << key.y2 << "))" << " Pheromone Value: " << key.GetPhero() << " Heuristic Value: " << 1.0/key.GetDistanceBetweenPoints(); 
 }
 
 bool PheroKey::operator < (const PheroKey& key) const{

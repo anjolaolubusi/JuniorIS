@@ -7,10 +7,11 @@
 class PheroKey{
 public:
 	PheroKey(); //Default Constructor
-	PheroKey(const int x1, const int y1, const int x2, const int y2); //Parameterized Constructor
+	//PheroKey(const int x1, const int y1, const int x2, const int y2); //Parameterized Constructor
 	PheroKey(const int x1, const int y1, const int x2, const int y2, const double pCount); //Parameterized Constructor
 	PheroKey( const PheroKey& otherkey); //Copy Constructor
 	void UpdatePhero(double NewPheroCount) const;
+	void ReplacePhero(double NewPheroCount) const;
 	double GetDistanceBetweenPoints() const; //Returns distance between points
 	int GetX1() const; //Returns x-coordinate of first point
 	int GetX2() const; //Returns y-coordinate of first point

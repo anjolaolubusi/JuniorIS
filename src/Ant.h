@@ -10,7 +10,7 @@ class Ant{
 private:
 	int ant_x; // x position
 	int ant_y; // y position
-	std::vector<PheroKey> keys_visited; // Set of Node Visitied
+	std::vector<std::shared_ptr<PheroKey>> keys_visited; // Set of Node Visitied
 	std::string state = "A"; //String containing state
 
 public:
@@ -20,7 +20,8 @@ public:
 	int GetX() const; //Returns x position
 	int GetY() const; //Returns y position
 	double GetPheroCount(GraphMap& gmap);
-	std::vector<PheroKey> GetKeysVisited() const;
+	double GetValueOfPath() const;
+	std::vector<std::shared_ptr<PheroKey>> GetKeysVisited() const;
 	void SetX(const int new_x); //Sets the x position
 	void SetY(const int new_y); //Sets the y position
 	void MoveAntToEndNode(GraphMap& gmap, bool first_run=false); //Moves the ant to end node
