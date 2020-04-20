@@ -3,7 +3,8 @@
 
 using namespace std;
 
-int main(){
+
+int main(void){
 
 GraphMap am;
 am.SetStartNode(5,5);
@@ -56,6 +57,7 @@ for(int i=0; i < ant_cout; i++){
 cout << "FINAL"  << endl;
 am.PrintPheroTable();
 
+
 /*
 cout << "Best Path: ";
 set<PheroKey> jdhd =  am.FindBestPathOfIter();
@@ -65,6 +67,7 @@ for(best_itr=jdhd.begin(); best_itr != jdhd.end(); best_itr++){
 }
 cout << endl;
 */
+
 
 cout << "FIN" << endl;
 return 0;

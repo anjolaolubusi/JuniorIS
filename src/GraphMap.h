@@ -12,7 +12,7 @@ private:
 	int width; // Width of the grid
 	int height; // Height of the grid
 	std::string** state_map; // 2 Dimensional Array of states
-	float evap_rate = 0.7; //Evapouration Rate
+	float evap_rate = 0.5; //Evapouration Rate
 	double DefaultPhero = 1.0; //Default pheromone number MUST NOT BE ZERO
 	std::vector<std::shared_ptr<PheroKey>> PheroTable;
 	int StartX = -1; //Initial Start Node X-Coordinate
