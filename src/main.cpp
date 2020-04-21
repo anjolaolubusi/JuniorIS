@@ -1,80 +1,34 @@
 #include "MMAS.h"
-
 using namespace std;
 
+
 //TODO: Added Error Checks
+MMAS* am = nullptr;
 
-int main(void){
+int main(int argc, const char * argv[])
+{
 
+	am = new MMAS();
 
-MMAS am;
-am.SetStartNode(5,5);
-am.SetEndNode(15, 5);
-am.AddEdge(5,5,10,15);
-am.AddEdge(5,5,10,0);
-am.AddEdge(10,0,15,5);
-am.AddEdge(10,15,15,5);
-am.PrintStateGrid();
-am.PrintPheroTable();
-cout << endl;
+	am->init("ACO", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, false);
 
-
-am.StartAlgorithm();
-/*int ant_cout = 100;
-//Ant ants[ant_cout];
-Ant *ants = NULL;
-ants = new Ant[ant_cout]();
-
-for(int inter = 0; inter < 50; inter++){
-
-for (int i=0; i < ant_cout; i++){
-	ants[i] = Ant(am.GetStartX(), am.GetStartY());
-	ants[i].MoveAntToEndNode(am, true);
-	while(ants[i].GetX() != am.GetEndX() && ants[i].GetY() != am.GetEndY()){
-	ants[i].MoveAntToEndNode(am);
+	while(am->running()){
+		am->handleEvents();
+		am->update();
+		am->render();
 	}
 
-}
+	am->clean();
 
-//Add logic to get best path of iteration
-
-int choice_index = -1;
-double MaxInfo = -99999.0;
-double test_value = 0;
-for(int i =0; i < ant_cout; i++){
-	test_value = ants[i].GetValueOfPath();
-	if(MaxInfo < test_value){
-		MaxInfo = test_value;
-		choice_index = i;
-	}
-}
-
-am.SetBestPath(ants[choice_index].GetKeysVisited());
-am.EvapouratePhero();
-am.UpdatePhero(inter);
-
-for(int i=0; i < ant_cout; i++){
-	ants[i].EmptyKV();
-}
-
-}
-
-cout << "FINAL"  << endl;
-am.PrintPheroTable();
-
-*/
-
-/*
-cout << "Best Path: ";
-set<PheroKey> jdhd =  am.FindBestPathOfIter();
-set<PheroKey>::iterator best_itr;
-for(best_itr=jdhd.begin(); best_itr != jdhd.end(); best_itr++){
-	cout << *best_itr << " ";
-}
-cout << endl;
-*/
-
-//delete [] ants;
+am->SetStartNode(5,5);
+am->SetEndNode(15, 5);
+am->AddEdge(5,5,10,15);
+am->AddEdge(5,5,10,0);
+am->AddEdge(10,0,15,5);
+am->AddEdge(10,15,15,5);
+am->PrintStateGrid();
+am->PrintPheroTable();
+	
 
 cout << "FIN" << endl;
 return 0;
