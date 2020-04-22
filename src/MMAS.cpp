@@ -27,7 +27,7 @@ MMAS::MMAS(const MMAS& otherMMAS){
 
 
 void MMAS::initWindow(){
-	this->window = new sf::RenderWindow(sf::VideoMode(800,600), "ACO");
+	this->window = new sf::RenderWindow(sf::VideoMode(800,600), "ACO", sf::Style::Default);
 	this->window->setFramerateLimit(120);
 	this->window->setVerticalSyncEnabled(false);
 }
@@ -57,9 +57,10 @@ void MMAS::updateSFMLEvents(){
 				if(this->sfEvent.key.code == sf::Keyboard::Space){
 					this->hasBegun = !this->hasBegun;
 				}
+			case sf::Event::Resized:
+				sf::FloatRect visibleArea(0, 0, this->sfEvent.size.width, this->sfEvent.size.height);
+				this->window->setView(sf::View(visibleArea));
 
-			default:
-				break;
 		}
 	}
 }
