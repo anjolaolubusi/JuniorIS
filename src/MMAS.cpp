@@ -28,7 +28,7 @@ MMAS::MMAS(const MMAS& otherMMAS){
 
 void MMAS::initWindow(){
 	this->window = new sf::RenderWindow(sf::VideoMode(800,600), "ACO");
-	this->window->setFramerateLimit(30);
+	this->window->setFramerateLimit(120);
 	this->window->setVerticalSyncEnabled(false);
 }
 
@@ -67,44 +67,44 @@ void MMAS::updateSFMLEvents(){
 void MMAS::update(){
 	this->updateSFMLEvents();
 	//Move ant to the next node or update PheromoenTable
-	vector<Ant>::iterator ant_itr;
+	vector<shared_ptr<Ant>>::iterator ant_itr;
 	if(inter_num < 50 && hasBegun){
 	for(ant_itr=ants.begin(); ant_itr!=ants.end(); ant_itr++){
 
-		if(ant_itr->IsAtNode(graphMap.GetEndX(), graphMap.GetEndY())){
+		if(ant_itr->get()->IsAtNode(graphMap.GetEndX(), graphMap.GetEndY())){
 			antAtEnd++;	
 		}else{
-			if(ant_itr->GraphAntAtNode()){
-			ant_itr->MoveAntToEndNode(graphMap);
-			ant_itr->update(dt);
+			if(ant_itr->get()->GraphAntAtNode()){
 			antAtEnd = 0;
+			ant_itr->get()->MoveAntToEndNode(graphMap);
+			ant_itr->get()->update(dt);
 			}else{
-			ant_itr->update(dt);
+			ant_itr->get()->update(dt);
 			}
 		}
 	}
 	if(antAtEnd == ant_count){		
-		vector<Ant>::iterator choice_itr = ants.begin();
+		vector<shared_ptr<Ant>>::iterator choice_itr = ants.begin();
 		double MaxInfo = -99999.0;
 		double test_value = 0;
 		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
-			test_value = ant_itr->GetValueOfPath();
+			test_value = ant_itr->get()->GetValueOfPath();
 			if(MaxInfo < test_value){
 				MaxInfo = test_value;
 				choice_itr = ant_itr;
 			}
 		}
 
-		graphMap.SetBestPath(choice_itr->GetKeysVisited());
+		graphMap.SetBestPath(choice_itr->get()->GetKeysVisited());
 		graphMap.EvapouratePhero();
 		graphMap.UpdatePhero(inter_num);
 
 		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
-			ant_itr->MoveAntToStartNode(graphMap);
+			ant_itr->get()->MoveAntToStartNode(graphMap);
 		}
 
 		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
-			ant_itr->EmptyKV();
+			ant_itr->get()->EmptyKV();
 		}
 		inter_num++;
 	}
@@ -121,9 +121,9 @@ void MMAS::render(){
 	for(rect_itr=ListOfEdges.begin(); rect_itr != ListOfEdges.end(); rect_itr++){
 		window->draw(*rect_itr);
 	}
-	vector<Ant>::iterator ant_itr;
+	vector<shared_ptr<Ant>>::iterator ant_itr;
 	for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
-		ant_itr->render(this->window);
+		ant_itr->get()->render(this->window);
 	}	
 	this->window->display();
 }
@@ -169,7 +169,7 @@ void MMAS::RemoveEdge(const PheroKey& key){
 void MMAS::SetStartNode(const int x, const int y){
 	graphMap.SetStartNode(x, y);
 	for(int i = 0; i < ant_count; i++){
-		ants.push_back(Ant(graphMap.GetStartX(), graphMap.GetStartY()));
+		ants.push_back(make_shared<Ant>(graphMap.GetStartX(), graphMap.GetStartY()));
 	}
 	sf::Sprite nodeSprite(nodeTex);
 	nodeSprite.setPosition(x, y);
@@ -191,7 +191,7 @@ void MMAS::SetNumberOfAnts(const int number_of_ants){
 	int diff = number_of_ants - ant_count;
 	if(diff > 0){
 		for(int i=0; i < diff; i++){
-			ants.push_back(Ant(graphMap.GetStartX(), graphMap.GetStartY()));
+			ants.push_back(make_shared<Ant>(graphMap.GetStartX(), graphMap.GetStartY()));
 		}
 	}else if(diff < 0){
 		diff = 0 - diff;

@@ -15,7 +15,7 @@ private:
 	std::string state = "A"; //String containing state
 	sf::RectangleShape shape;
 	float moveSpeed = 10.0f;
-	float ant_angle = 0;
+	float ant_slope = 0;
 
 public:
 	Ant(); //Default constructor

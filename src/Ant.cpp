@@ -8,6 +8,7 @@ Ant::Ant(){
 	this->shape.setSize(sf::Vector2f(10.f, 10.f));
 	this->shape.setFillColor (sf::Color::Blue);
 	this->shape.setPosition(0,0);
+	this->shape.setOrigin (5.f, 5.f);
 }
 
 Ant::Ant(const int new_x, const int new_y){
@@ -16,6 +17,7 @@ Ant::Ant(const int new_x, const int new_y){
 	this->shape.setSize(sf::Vector2f(10.f, 10.f));
 	this->shape.setPosition (ant_x, ant_y);
 	this->shape.setFillColor (sf::Color::Blue);	
+	this->shape.setOrigin (5.f, 5.f);
 }
 
 
@@ -107,9 +109,7 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 			keys_visited.push_back(*result);
 			ant_x = result->get()->GetX2();
 			ant_y = result->get()->GetY2();
-			float deltaX = this->shape.getPosition().x-ant_x;
-			float deltaY = this->shape.getPosition().y-ant_y;
-			ant_angle = atan(deltaY/deltaX) * (180/M_PI);
+			ant_slope = (ant_y - this->shape.getPosition().y)/(ant_x - this->shape.getPosition().x);
 			break;
 		}
 		cum += current_prob;
@@ -123,7 +123,7 @@ void Ant::MoveAntToStartNode(GraphMap& gmap){
 }
 
 bool Ant::IsAtNode(const int n_x, const int n_y){
-	return (ant_x == n_x && ant_y == n_y);
+	return (ant_x == n_x && ant_y == n_y && round(this->shape.getPosition().x) == ant_x && round(this->shape.getPosition().y) == ant_y);
 }
 
 bool Ant::IsOnKey(const PheroKey& key){
@@ -162,20 +162,19 @@ Ant::~Ant(){
 
 void Ant::update(const float& dt){	
 	if(this->shape.getPosition().x != ant_x && this->shape.getPosition().y != ant_y){
-		this->move(dt, ant_angle);
+		this->move(dt, ant_slope);
 	}
 }
 
 void Ant::render(sf::RenderTarget* target){
 	target->draw(this->shape);
-	//cout << "ANTX: " << this->shape.getPosition().x << " ant_x: " << ant_x << endl;
 }
 
-void Ant::move(const float& dt, const float angle){
-	this->shape.move(sin(angle), cos(angle));
-	cout << "X: " << this->shape.getPosition().x << " Y: " << shape.getPosition().y << endl;
+void Ant::move(const float& dt, const float slope){
+	int dX = 1;
+	this->shape.move(dX, slope);
 }
 
 bool Ant::GraphAntAtNode(){
-	return (this->shape.getPosition().x == ant_x && this->shape.getPosition().y == ant_y);
+	return (round(this->shape.getPosition().x) == ant_x && round(this->shape.getPosition().y) == ant_y);
 }

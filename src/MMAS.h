@@ -11,8 +11,8 @@
 class MMAS{
 private:
 	GraphMap graphMap;
-	std::vector<Ant> ants;
-	int ant_count = 2;
+	std::vector<std::shared_ptr<Ant>> ants;
+	int ant_count = 10;
 	bool StartHasBeenSet = false;
 	bool EndHasBeenSet = false;
 	int inter_num = 0;
