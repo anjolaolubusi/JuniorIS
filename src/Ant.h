@@ -15,6 +15,7 @@ private:
 	std::string state = "A"; //String containing state
 	sf::RectangleShape shape;
 	float moveSpeed = 10.0f;
+	float ant_angle = 0;
 
 public:
 	Ant(); //Default constructor
@@ -40,5 +41,7 @@ public:
 	void update(const float& dt);
 	void render(sf::RenderTarget* target);
 	void move(const float& dt, const float angle);
+
+	bool GraphAntAtNode();
 };
 #endif

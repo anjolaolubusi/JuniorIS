@@ -5,15 +5,16 @@ using namespace std;
 Ant::Ant(){
 	ant_x = 0;
 	ant_y = 0;
-	this->shape.setSize(sf::Vector2f(25.f, 25.f));
+	this->shape.setSize(sf::Vector2f(10.f, 10.f));
 	this->shape.setFillColor (sf::Color::Blue);
+	this->shape.setPosition(0,0);
 }
 
 Ant::Ant(const int new_x, const int new_y){
 	ant_x = new_x;
 	ant_y = new_y;
-	this->shape.setSize(sf::Vector2f(25.f, 25.f));
-	this->shape.setPosition (new_x, new_y);
+	this->shape.setSize(sf::Vector2f(10.f, 10.f));
+	this->shape.setPosition (ant_x, ant_y);
 	this->shape.setFillColor (sf::Color::Blue);	
 }
 
@@ -22,6 +23,7 @@ Ant::Ant(const Ant& anthony){
 	ant_x = anthony.ant_x;
 	ant_y = anthony.ant_y;
 	keys_visited = anthony.keys_visited;
+	this->shape = anthony.shape;
 }
 
 int Ant::GetX() const{
@@ -105,6 +107,9 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 			keys_visited.push_back(*result);
 			ant_x = result->get()->GetX2();
 			ant_y = result->get()->GetY2();
+			float deltaX = this->shape.getPosition().x-ant_x;
+			float deltaY = this->shape.getPosition().y-ant_y;
+			ant_angle = atan(deltaY/deltaX) * (180/M_PI);
 			break;
 		}
 		cum += current_prob;
@@ -114,6 +119,7 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 void Ant::MoveAntToStartNode(GraphMap& gmap){
 	ant_x = gmap.GetStartX();	
 	ant_y = gmap.GetStartY();
+	this->shape.setPosition (gmap.GetStartX(), gmap.GetStartY());
 }
 
 bool Ant::IsAtNode(const int n_x, const int n_y){
@@ -156,17 +162,20 @@ Ant::~Ant(){
 
 void Ant::update(const float& dt){	
 	if(this->shape.getPosition().x != ant_x && this->shape.getPosition().y != ant_y){
-		float deltaX = this->shape.getPosition().x-ant_x;
-		float deltaY = this->shape.getPosition().y-ant_y;
-		float ang = atan(deltaY/deltaX) * (180/M_PI);
-		this->move(dt, ang);
+		this->move(dt, ant_angle);
 	}
 }
 
 void Ant::render(sf::RenderTarget* target){
 	target->draw(this->shape);
+	//cout << "ANTX: " << this->shape.getPosition().x << " ant_x: " << ant_x << endl;
 }
 
 void Ant::move(const float& dt, const float angle){
-	this->shape.move(sin(angle)*2.0f*dt, cos(angle) * 2.0f * dt);
+	this->shape.move(sin(angle), cos(angle));
+	cout << "X: " << this->shape.getPosition().x << " Y: " << shape.getPosition().y << endl;
+}
+
+bool Ant::GraphAntAtNode(){
+	return (this->shape.getPosition().x == ant_x && this->shape.getPosition().y == ant_y);
 }

@@ -12,7 +12,7 @@ class MMAS{
 private:
 	GraphMap graphMap;
 	std::vector<Ant> ants;
-	int ant_count = 10;
+	int ant_count = 2;
 	bool StartHasBeenSet = false;
 	bool EndHasBeenSet = false;
 	int inter_num = 0;

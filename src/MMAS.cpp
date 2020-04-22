@@ -28,7 +28,7 @@ MMAS::MMAS(const MMAS& otherMMAS){
 
 void MMAS::initWindow(){
 	this->window = new sf::RenderWindow(sf::VideoMode(800,600), "ACO");
-	this->window->setFramerateLimit(10);
+	this->window->setFramerateLimit(30);
 	this->window->setVerticalSyncEnabled(false);
 }
 
@@ -70,11 +70,17 @@ void MMAS::update(){
 	vector<Ant>::iterator ant_itr;
 	if(inter_num < 50 && hasBegun){
 	for(ant_itr=ants.begin(); ant_itr!=ants.end(); ant_itr++){
+
 		if(ant_itr->IsAtNode(graphMap.GetEndX(), graphMap.GetEndY())){
 			antAtEnd++;	
 		}else{
+			if(ant_itr->GraphAntAtNode()){
 			ant_itr->MoveAntToEndNode(graphMap);
+			ant_itr->update(dt);
 			antAtEnd = 0;
+			}else{
+			ant_itr->update(dt);
+			}
 		}
 	}
 	if(antAtEnd == ant_count){		
@@ -115,6 +121,10 @@ void MMAS::render(){
 	for(rect_itr=ListOfEdges.begin(); rect_itr != ListOfEdges.end(); rect_itr++){
 		window->draw(*rect_itr);
 	}
+	vector<Ant>::iterator ant_itr;
+	for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
+		ant_itr->render(this->window);
+	}	
 	this->window->display();
 }
 
