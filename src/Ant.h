@@ -4,6 +4,7 @@
 #include <iostream>
 #include "GraphMap.h"
 #include <random>
+#include <SFML/Graphics.hpp>
 
 
 class Ant{
@@ -12,6 +13,8 @@ private:
 	int ant_y; // y position
 	std::vector<std::shared_ptr<PheroKey>> keys_visited; // Set of Node Visitied
 	std::string state = "A"; //String containing state
+	sf::RectangleShape shape;
+	float moveSpeed = 10.0f;
 
 public:
 	Ant(); //Default constructor
@@ -33,5 +36,9 @@ public:
 	friend std::ostream& operator<<(std::ostream& out, const Ant& anthony); //Output overloader
 	void PrintAntInfo(GraphMap& gmap) const; //Prints the ant object with the proper pheromone count
 	~Ant();
+
+	void update(const float& dt);
+	void render(sf::RenderTarget* target);
+	void move(const float& dt, const float angle);
 };
 #endif

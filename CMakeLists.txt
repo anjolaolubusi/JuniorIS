@@ -9,10 +9,10 @@ file(GLOB project_src
 		"src/*.h"
 		"src/*.cpp"
 	)
-find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS})
+set(SFML_DIR "<sfml root prefix>/lib/cmake/SFML")
+find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 add_executable(
 	run.o
 	${project_src}
 	)
-target_link_libraries(run.o ${SDL2_LIBRARIES})
+target_link_libraries(run.o sfml-graphics sfml-audio)

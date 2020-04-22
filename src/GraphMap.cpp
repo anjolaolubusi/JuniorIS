@@ -6,31 +6,17 @@ using namespace std;
 GraphMap::GraphMap(){
 	width = 20;
 	height = 20;
-	state_map = new string*[height];
-	for (int i = 0; i < height; i++){
-		state_map[i] = new string[width];	
-	}
-	for(int i = 0; i < height; i++){
-		for(int j=0;j < width; j++){
-			state_map[i][j] = "*";
-		}
-	}	
 }
 
 
 GraphMap::GraphMap(int n_width, int n_height){
 	width = n_width;
  	height = n_height;
-	state_map = new string*[height];
-	for (int i = 0; i < width; i++){
-		state_map[i] = new string[height];	
-	}
 }
 
 GraphMap::GraphMap(const GraphMap& gMap2){
 	width = gMap2.width;
 	height = gMap2.height;
-	state_map = gMap2.state_map;
 	evap_rate = gMap2.evap_rate;
 	DefaultPhero = gMap2.DefaultPhero;
 	PheroTable = gMap2.PheroTable;
@@ -42,19 +28,8 @@ GraphMap::GraphMap(const GraphMap& gMap2){
 }
 
 GraphMap::~GraphMap(){
-	 for (int i = 0; i < width; i++){
-		delete [] state_map[i];
-	}
-	delete [] state_map;
 }
 
-string** GraphMap::GetStateArray() const{
-	return state_map;
-}
-
-string GraphMap::GetState(int x, int y) const{
-	return state_map[x][y];
-}
 
 vector<shared_ptr<PheroKey>> GraphMap::GetPheroTable() const{
 	return PheroTable;
@@ -102,14 +77,6 @@ vector<shared_ptr<PheroKey>> GraphMap::GetBestPathOfIter() {
 	return BestPathOfIter;
 }
 
-void GraphMap::PrintStateGrid(){
-	for( int i=0;i < height;i++){
-		for(int j=0;j < width;j++){
-			cout << state_map[i][j] << " ";
-		}
-		cout << endl;
-	}
-}
 
 void GraphMap::PrintPheroTable(){
 	vector<shared_ptr<PheroKey>>::iterator key_itr;
@@ -127,28 +94,11 @@ void GraphMap::PrintPheroTable( vector<shared_ptr<PheroKey>> p_map){
 
 void GraphMap::AddEdge(const int x1, const int y1, const int x2, const int y2){
 	PheroTable.push_back(make_shared<PheroKey>(x1,y1,x2,y2, MaxPhero));
-	if(state_map[y1][x1] != "S" && state_map[y1][x1] != "F"){	
-		state_map[y1][x1] = "N";
-	}
-	if(state_map[y2][x2] != "S" && state_map[y2][x2] != "F"){	
-		state_map[y2][x2] = "N";
-	}
 }
 
 void GraphMap::AddEdge(const PheroKey& key){
 	PheroTable.push_back(make_shared<PheroKey>(key.GetX1(),key.GetX2(),key.GetY1(),key.GetY2(), key.GetPhero()));
-	if(state_map[key.GetY1()][key.GetX1()] != "S" && state_map[key.GetY1()][key.GetX1()] != "F"){	
-		state_map[key.GetY1()][key.GetX1()] = "N";
-	}
-	if(state_map[key.GetY2()][key.GetX2()] != "S" && state_map[key.GetY2()][key.GetX2()] != "F"){	
-		state_map[key.GetY2()][key.GetX2()] = "N";
-	}
 }
-void GraphMap::ChangeState(const int x, const int y, const string new_state){
-	state_map[y][x] = new_state;
-}
-
-
 
 void GraphMap::UpdatePhero(int inter_num){
 	if(!BestPathSoFar.empty() && !BestPathOfIter.empty()){
@@ -212,13 +162,11 @@ vector<shared_ptr<PheroKey>> GraphMap::GetAllEdges(const int x1, const int y1){
 void GraphMap::SetStartNode(const int x, const int y){
 	StartX = x;
 	StartY = y;
-	state_map[y][x] = "S";
 }
 
 void GraphMap::SetEndNode(const int x, const int y){
 	EndX = x;
 	EndY = y;
-	state_map[y][x] = "F";
 }
 
 

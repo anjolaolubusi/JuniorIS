@@ -5,11 +5,16 @@ using namespace std;
 Ant::Ant(){
 	ant_x = 0;
 	ant_y = 0;
+	this->shape.setSize(sf::Vector2f(25.f, 25.f));
+	this->shape.setFillColor (sf::Color::Blue);
 }
 
 Ant::Ant(const int new_x, const int new_y){
 	ant_x = new_x;
 	ant_y = new_y;
+	this->shape.setSize(sf::Vector2f(25.f, 25.f));
+	this->shape.setPosition (new_x, new_y);
+	this->shape.setFillColor (sf::Color::Blue);	
 }
 
 
@@ -76,17 +81,6 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 			PossibleEdges.erase(temp_remover);
 		}
 	}
-	if(first_run){
-		random_device dev;
-		mt19937 rng(dev());
-		uniform_int_distribution<mt19937::result_type> dist(0, PossibleEdges.size()-1);
-		int choice_index = dist(rng);
-		result = PossibleEdges.begin();
-		advance(result, choice_index);
-		keys_visited.push_back(*result);
-		ant_x = result->get()->GetX2();
-		ant_y = result->get()->GetY2();
-	}else{
 		double pSet[PossibleEdges.size()];
 		double TotalPhero = 0;
 		int i = 0;
@@ -115,7 +109,6 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 		}
 		cum += current_prob;
 		}
-	}
 }
 
 void Ant::MoveAntToStartNode(GraphMap& gmap){
@@ -159,4 +152,21 @@ void Ant::PrintAntInfo(GraphMap& gmap) const{
 }
 
 Ant::~Ant(){
+}
+
+void Ant::update(const float& dt){	
+	if(this->shape.getPosition().x != ant_x && this->shape.getPosition().y != ant_y){
+		float deltaX = this->shape.getPosition().x-ant_x;
+		float deltaY = this->shape.getPosition().y-ant_y;
+		float ang = atan(deltaY/deltaX) * (180/M_PI);
+		this->move(dt, ang);
+	}
+}
+
+void Ant::render(sf::RenderTarget* target){
+	target->draw(this->shape);
+}
+
+void Ant::move(const float& dt, const float angle){
+	this->shape.move(sin(angle)*2.0f*dt, cos(angle) * 2.0f * dt);
 }

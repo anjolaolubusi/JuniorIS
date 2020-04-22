@@ -3,32 +3,27 @@ using namespace std;
 
 
 //TODO: Added Error Checks
-MMAS* am = nullptr;
 
-int main(int argc, const char * argv[])
+int main()
 {
 
-	am = new MMAS();
+MMAS am;
+am.SetStartNode(200,400);
+am.SetEndNode(700, 400);
+am.AddNode(450, 250);
+am.AddNode(450, 800);
+//am.AddEdge(200,400,700,400);
+am.AddEdge(200,400,450,250);
+am.AddEdge(450,250,700,400);
+am.AddEdge(200,400,450,800);
+am.AddEdge(450,800,700,400);
 
-	am->init("ACO", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, false);
-
-	while(am->running()){
-		am->handleEvents();
-		am->update();
-		am->render();
-	}
-
-	am->clean();
-
-am->SetStartNode(5,5);
-am->SetEndNode(15, 5);
-am->AddEdge(5,5,10,15);
-am->AddEdge(5,5,10,0);
-am->AddEdge(10,0,15,5);
-am->AddEdge(10,15,15,5);
-am->PrintStateGrid();
-am->PrintPheroTable();
-	
+/*am.AddEdge(5,5,10,15);
+am.AddEdge(5,5,10,0);
+am.AddEdge(10,0,15,5);
+am.AddEdge(10,15,15,5);*/
+//am.PrintPheroTable();
+am.run();
 
 cout << "FIN" << endl;
 return 0;
