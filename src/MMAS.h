@@ -12,7 +12,7 @@ class MMAS{
 private:
 	GraphMap graphMap;
 	std::vector<std::shared_ptr<Ant>> ants;
-	int ant_count = 10;
+	int ant_count = 30;
 	bool StartHasBeenSet = false;
 	bool EndHasBeenSet = false;
 	int inter_num = 0;
@@ -26,6 +26,7 @@ private:
 	sf::Texture nodeTex;
 	sf::RenderWindow* window;
 	sf::Event sfEvent;
+	sf::View view;
 
 	sf::Clock dtClock;
 	float dt;

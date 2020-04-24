@@ -14,8 +14,11 @@ private:
 	std::vector<std::shared_ptr<PheroKey>> keys_visited; // Set of Node Visitied
 	std::string state = "A"; //String containing state
 	sf::RectangleShape shape;
-	float moveSpeed = 10.0f;
+	double moveSpeed;
 	float ant_slope = 0;
+	float UnitVecX;
+	float UnitVecY;
+	float VecMag;
 
 public:
 	Ant(); //Default constructor
@@ -40,8 +43,11 @@ public:
 
 	void update(const float& dt);
 	void render(sf::RenderTarget* target);
-	void move(const float& dt, const float angle);
+	void moveX();
+	void moveY();
 
 	bool GraphAntAtNode();
+	bool GraphAntAtNode(int x, int y);
+	void SetSpeed(double speed);
 };
 #endif

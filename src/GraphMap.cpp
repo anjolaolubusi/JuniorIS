@@ -82,6 +82,10 @@ void GraphMap::PrintPheroTable(){
 	vector<shared_ptr<PheroKey>>::iterator key_itr;
 	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++ ){
 		cout << **key_itr << " " << endl;
+	}
+	cout << "Best Path So Far: " << endl;
+	for(key_itr=BestPathSoFar.begin(); key_itr != BestPathSoFar.end(); key_itr++){
+		cout << **key_itr << " " << endl;
 	}	
 }
 

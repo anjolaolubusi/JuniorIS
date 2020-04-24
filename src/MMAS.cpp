@@ -10,6 +10,7 @@ MMAS::MMAS(){
 	//nodeSprite = new sf::Sprite(nodeTex);
 	//nodeSprite->setOrigin ((nodeTex.getSize().x * nodeSprite->getScale().x)/2, (nodeTex.getSize().y * nodeSprite->getScale().y)/2);
 	cout << "INIT" << endl;
+	view = window->getDefaultView();
 }
 
 MMAS::MMAS(int startX, int startY, int endX, int endY, int number_of_ants){
@@ -27,7 +28,7 @@ MMAS::MMAS(const MMAS& otherMMAS){
 
 
 void MMAS::initWindow(){
-	this->window = new sf::RenderWindow(sf::VideoMode(800,600), "ACO", sf::Style::Default);
+	this->window = new sf::RenderWindow(sf::VideoMode(1152,864), "ACO");
 	this->window->setFramerateLimit(120);
 	this->window->setVerticalSyncEnabled(false);
 }
@@ -57,10 +58,9 @@ void MMAS::updateSFMLEvents(){
 				if(this->sfEvent.key.code == sf::Keyboard::Space){
 					this->hasBegun = !this->hasBegun;
 				}
-			case sf::Event::Resized:
-				sf::FloatRect visibleArea(0, 0, this->sfEvent.size.width, this->sfEvent.size.height);
-				this->window->setView(sf::View(visibleArea));
 
+			default:
+				break;
 		}
 	}
 }
@@ -69,14 +69,14 @@ void MMAS::update(){
 	this->updateSFMLEvents();
 	//Move ant to the next node or update PheromoenTable
 	vector<shared_ptr<Ant>>::iterator ant_itr;
-	if(inter_num < 50 && hasBegun){
+	if(inter_num < 1000 && hasBegun){
+		antAtEnd = 0;
 	for(ant_itr=ants.begin(); ant_itr!=ants.end(); ant_itr++){
-
-		if(ant_itr->get()->IsAtNode(graphMap.GetEndX(), graphMap.GetEndY())){
+		if(ant_itr->get()->GraphAntAtNode(graphMap.GetEndX(), graphMap.GetEndY())){
 			antAtEnd++;	
 		}else{
 			if(ant_itr->get()->GraphAntAtNode()){
-			antAtEnd = 0;
+			//antAtEnd = 0;
 			ant_itr->get()->MoveAntToEndNode(graphMap);
 			ant_itr->get()->update(dt);
 			}else{
@@ -107,6 +107,8 @@ void MMAS::update(){
 		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
 			ant_itr->get()->EmptyKV();
 		}
+		//this->PrintPheroTable();
+		//cout << endl;
 		inter_num++;
 	}
 	}
@@ -169,13 +171,22 @@ void MMAS::RemoveEdge(const PheroKey& key){
 
 void MMAS::SetStartNode(const int x, const int y){
 	graphMap.SetStartNode(x, y);
-	for(int i = 0; i < ant_count; i++){
+	for(int i = 0; i < ant_count; i++){	
 		ants.push_back(make_shared<Ant>(graphMap.GetStartX(), graphMap.GetStartY()));
 	}
 	sf::Sprite nodeSprite(nodeTex);
 	nodeSprite.setPosition(x, y);
 	cout << "START POS CRE" << endl;
 	ListOfNodes.push_back(nodeSprite);
+	vector<shared_ptr<Ant>>::iterator ant_itr;
+	for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
+		random_device dev;
+		mt19937 rng(dev());
+		uniform_real_distribution<double> dist(1.0, 2.0);
+		float ant_speed = dist(rng);
+		ant_itr->get()->SetSpeed(ant_speed);
+	}	
+	
 	StartHasBeenSet = true;
 }
 
