@@ -1,6 +1,9 @@
 #ifndef MMAS_H
 #define MMAS_H
 
+#include "imgui.h"
+#include "imgui-SFML.h"
+
 #include "Ant.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>

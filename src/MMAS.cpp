@@ -11,6 +11,7 @@ MMAS::MMAS(){
 	//nodeSprite->setOrigin ((nodeTex.getSize().x * nodeSprite->getScale().x)/2, (nodeTex.getSize().y * nodeSprite->getScale().y)/2);
 	cout << "INIT" << endl;
 	view = window->getDefaultView();
+	ImGui::SFML::Init(*window);
 }
 
 MMAS::MMAS(int startX, int startY, int endX, int endY, int number_of_ants){
@@ -18,6 +19,7 @@ MMAS::MMAS(int startX, int startY, int endX, int endY, int number_of_ants){
 	graphMap.SetStartNode(startX, startY);
 	graphMap.SetEndNode(endX, endY);
 	this->initWindow();
+	ImGui::SFML::Init(*window);
 }
 
 MMAS::MMAS(const MMAS& otherMMAS){
@@ -39,6 +41,7 @@ void MMAS::updateDt(){
 
 void MMAS::updateSFMLEvents(){
 	while(this->window->pollEvent(this->sfEvent)){
+		ImGui::SFML::ProcessEvent(this->sfEvent);
 		switch (this->sfEvent.type){
 			case sf::Event::Closed:	
 				this->window->close();
@@ -67,6 +70,7 @@ void MMAS::updateSFMLEvents(){
 
 void MMAS::update(){
 	this->updateSFMLEvents();
+	ImGui::SFML::Update(*window, dtClock.restart());
 	//Move ant to the next node or update PheromoenTable
 	vector<shared_ptr<Ant>>::iterator ant_itr;
 	if(inter_num < 1000 && hasBegun){
@@ -116,9 +120,13 @@ void MMAS::update(){
 		inter_num++;
 	}
 	}
+	ImGui::Begin("Hello, world!");
+        ImGui::Button("Look at this pretty button");
+        ImGui::End();
 }
 
 void MMAS::render(){
+
 	this->window->clear(sf::Color::White);
 	vector<sf::Sprite>::iterator node_itr;
 	for(node_itr=ListOfNodes.begin(); node_itr != ListOfNodes.end(); node_itr++){
@@ -132,6 +140,7 @@ void MMAS::render(){
 	for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
 		ant_itr->get()->render(this->window);
 	}	
+	ImGui::SFML::Render(*window);
 	this->window->display();
 }
 
@@ -186,7 +195,7 @@ void MMAS::SetStartNode(const int x, const int y){
 	for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
 		random_device dev;
 		mt19937 rng(dev());
-		uniform_real_distribution<double> dist(1.0, 2.0);
+		uniform_real_distribution<double> dist(1.0, 3.5);
 		float ant_speed = dist(rng);
 		ant_itr->get()->SetSpeed(ant_speed);
 	}	

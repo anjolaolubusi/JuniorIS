@@ -10,9 +10,12 @@ file(GLOB project_src
 		"src/*.cpp"
 	)
 set(SFML_DIR "<sfml root prefix>/lib/cmake/SFML")
+set(ImGui-SFML_DIR "<ImGui repo folder>")
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
+find_package(ImGui-SFML REQUIRED)
 add_executable(
 	run.o
 	${project_src}
 	)
-target_link_libraries(run.o sfml-graphics sfml-audio)
+target_link_libraries(run.o PRIVATE ImGui-SFML::ImGui-SFML)
+target_include_directories(run.o PRIVATE ${include/})
