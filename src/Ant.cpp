@@ -81,12 +81,29 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 	vector<shared_ptr<PheroKey>> PossibleEdges;
 	PossibleEdges = gmap.GetAllEdges(ant_x, ant_y);
 	vector<shared_ptr<PheroKey>>::iterator choice;
+
+
+	if(PossibleEdges.empty()){
+		isFin = true;
+	}
+
+
 	for(choice=keys_visited.begin(); choice!=keys_visited.end(); choice++){
 		vector<shared_ptr<PheroKey>>::iterator temp_remover;
 		for(temp_remover=PossibleEdges.begin(); temp_remover != PossibleEdges.end(); temp_remover++){
-			PossibleEdges.erase(temp_remover);
+			if(PossibleEdges.size() > 0 && !isFin){
+				if(**temp_remover == **choice){
+				PossibleEdges.erase(temp_remover);
+				}
+			}else{
+				isFin = true;
+				break;
+			}
 		}
 	}
+	
+
+	if(!isFin && PossibleEdges.size() > 0){
 		double pSet[PossibleEdges.size()];
 		double TotalPhero = 0;
 		int i = 0;
@@ -94,7 +111,7 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 			double phero_temp = gmap.GetPhero(**result) * (1/result->get()->GetDistanceBetweenPoints());
 			pSet[i] = phero_temp;
 			TotalPhero += phero_temp;
-			i += 1;
+			i += 1;	
 		}
 
 		double cum = 0;
@@ -119,12 +136,17 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 		}
 		cum += current_prob;
 		}
+	}else{
+	isFin = true;
+	}
+
 }
 
 void Ant::MoveAntToStartNode(GraphMap& gmap){
 	ant_x = gmap.GetStartX();	
 	ant_y = gmap.GetStartY();
 	this->shape.setPosition (gmap.GetStartX(), gmap.GetStartY());
+	isFin = false;
 }
 
 bool Ant::IsAtNode(const int n_x, const int n_y){
@@ -195,12 +217,17 @@ void Ant::moveY(){
 }
 
 bool Ant::GraphAntAtNode(){
-	return ((round(this->shape.getPosition().x) == ant_x || round(this->shape.getPosition().x) == ant_x || round(this->shape.getPosition().x) == ant_x+1  ) && (round(this->shape.getPosition().y) == ant_y || round(this->shape.getPosition().y) == ant_y || round(this->shape.getPosition().y) == ant_y+1) );
+	return ((round(this->shape.getPosition().x) == ant_x-1 || round(this->shape.getPosition().x) == ant_x || round(this->shape.getPosition().x) == ant_x+1  ) && (round(this->shape.getPosition().y) == ant_y-1 || round(this->shape.getPosition().y) == ant_y || round(this->shape.getPosition().y) == ant_y+1) );
 }
 
 bool Ant::GraphAntAtNode(int x, int y){
-	return ((round(this->shape.getPosition().x) == x || round(this->shape.getPosition().x) == x || round(this->shape.getPosition().x) == x+1  ) && (round(this->shape.getPosition().y) == y || round(this->shape.getPosition().y) == y || round(this->shape.getPosition().y) == y+1) );
+	return ((round(this->shape.getPosition().x) == x-1 || round(this->shape.getPosition().x) == x || round(this->shape.getPosition().x) == x+1  ) && (round(this->shape.getPosition().y) == y-1 || round(this->shape.getPosition().y) == y || round(this->shape.getPosition().y) == y+1) );
 }
+
 void Ant::SetSpeed(double speed){
 	moveSpeed = speed;
+}
+
+bool Ant::IsAntFin(){
+	return this->isFin;
 }

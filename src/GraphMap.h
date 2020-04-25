@@ -18,7 +18,7 @@ private:
 	int StartY = -1; //Initial Start Node Y-Coordinate
 	int EndX = -1; //Initial End Node X-Coordinate
 	int EndY = -1; //Initial End Node Y-Coordinate
-	double MinPhero = 0.5;
+	double MinPhero = 0.000005;
 	double MaxPhero = 10;
 	std::vector<std::shared_ptr<PheroKey>> BestPathSoFar;
 	std::vector<std::shared_ptr<PheroKey>> BestPathOfIter;

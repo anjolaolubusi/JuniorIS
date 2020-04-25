@@ -22,12 +22,16 @@ public:
 	friend std::ostream& operator<<(std::ostream& out, const PheroKey& key); //Output overloader
 	bool operator < (const PheroKey& key) const; //Operator overloader
 	~PheroKey(); //Destructor
+	void SetDisBetweenPoint(const double NewDis);
+	void ResetDisBetweenPoint();
 private:
 	int x1; //X Coordinate of First Point
 	int y1; //Y Coordinate of First Point
 	int x2; //X Coordinate of Second Point
 	int y2; //Y Coordinate of Second Point
     mutable double pheroCount;
+	double DisBetweenPoints;
+	bool IsWalkable;
 };
 
 #endif

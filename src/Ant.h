@@ -19,6 +19,7 @@ private:
 	float UnitVecX;
 	float UnitVecY;
 	float VecMag;
+	bool isFin = false;
 
 public:
 	Ant(); //Default constructor
@@ -49,5 +50,6 @@ public:
 	bool GraphAntAtNode();
 	bool GraphAntAtNode(int x, int y);
 	void SetSpeed(double speed);
+	bool IsAntFin();
 };
 #endif

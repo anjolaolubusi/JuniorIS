@@ -1,10 +1,10 @@
 #include "PheroKey.h"
 
 using namespace std;
-
 PheroKey::PheroKey(){
  x1 = y1 = x2 = y2 = -1;
 pheroCount = 10;
+DisBetweenPoints = 0;
 }
 
 
@@ -22,6 +22,7 @@ PheroKey::PheroKey(const int x1_n, const int y1_n, const int x2_n, const int y2_
 	x2 = x2_n;
 	y2 = y2_n;
 	pheroCount = pCount;
+	DisBetweenPoints = sqrt( (x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
 }
 PheroKey::PheroKey( const PheroKey& key2){
 	 x1 = key2.x1;
@@ -29,6 +30,7 @@ PheroKey::PheroKey( const PheroKey& key2){
 	 x2 = key2.x2;
 	 y2 = key2.y2;
 	 pheroCount = key2.pheroCount;
+	 DisBetweenPoints = key2.DisBetweenPoints;
 }
 
 void PheroKey::UpdatePhero(double newvalue) const{
@@ -41,7 +43,7 @@ void PheroKey::ReplacePhero(double newvalue) const{
 }
 
 double PheroKey::GetDistanceBetweenPoints() const{
-	return sqrt( (x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
+	return DisBetweenPoints;
 }
 
 int PheroKey::GetX1() const{
@@ -85,6 +87,14 @@ bool PheroKey::operator < (const PheroKey& key) const{
 	}else{
 	return false;
 	}
+}
+
+void PheroKey::SetDisBetweenPoint(const double NewDis){
+	DisBetweenPoints = NewDis;
+}
+
+void PheroKey::ResetDisBetweenPoint(){
+	DisBetweenPoints = sqrt( (x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
 }
 
 PheroKey::~PheroKey(){

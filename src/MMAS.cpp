@@ -72,6 +72,7 @@ void MMAS::update(){
 	if(inter_num < 1000 && hasBegun){
 		antAtEnd = 0;
 	for(ant_itr=ants.begin(); ant_itr!=ants.end(); ant_itr++){
+		if(!ant_itr->get()->IsAntFin()){
 		if(ant_itr->get()->GraphAntAtNode(graphMap.GetEndX(), graphMap.GetEndY())){
 			antAtEnd++;	
 		}else{
@@ -83,6 +84,9 @@ void MMAS::update(){
 			ant_itr->get()->update(dt);
 			}
 		}
+		}else{
+		antAtEnd++;
+		}
 	}
 	if(antAtEnd == ant_count){		
 		vector<shared_ptr<Ant>>::iterator choice_itr = ants.begin();
@@ -90,7 +94,7 @@ void MMAS::update(){
 		double test_value = 0;
 		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
 			test_value = ant_itr->get()->GetValueOfPath();
-			if(MaxInfo < test_value){
+			if(MaxInfo < test_value && ant_itr->get()->GetKeysVisited().back()->GetX2() == graphMap.GetEndX() && ant_itr->get()->GetKeysVisited().back()->GetY2() == graphMap.GetEndY()){
 				MaxInfo = test_value;
 				choice_itr = ant_itr;
 			}
