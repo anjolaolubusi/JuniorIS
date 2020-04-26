@@ -10,6 +10,7 @@
 #include <SFML/System.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
+#include <string>
 
 class MMAS{
 private:
@@ -21,8 +22,8 @@ private:
 	int inter_num = 0;
 	int antAtEnd = 0;
 	bool hasBegun = false;
-
 	float radius = 50.0f;
+	float PheroConst = 0.5;
 
 	std::vector<sf::Sprite> ListOfNodes;
 	std::vector<sf::RectangleShape> ListOfEdges;
@@ -35,13 +36,12 @@ private:
 	float dt;
 
 	void initWindow();
-
 public:
 	MMAS();
 	MMAS(int startX, int startY, int endX, int endY, int number_of_ants);
 	MMAS( const MMAS& otherAnt);
 
-	
+
 	void updateDt();
 
 	void updateSFMLEvents();
@@ -51,13 +51,15 @@ public:
 
 	void AddNode(const int x, const int y);
 	void AddEdge(const int x1, const int y1, const int x2, const int y2);
-	void AddEdge(const PheroKey& key);	
+	void AddEdge(const PheroKey& key);
 	void RemoveEdge(const PheroKey& key);
 	void SetStartNode(const int x, const int y);
 	void SetEndNode(const int x, const int y);
 	void SetNumberOfAnts(const int number_of_ants);
 	void PrintPheroTable();
+	void HandleGUI();
 	void StartAlgorithm();
+	bool HasBestPathBeenFound();
 	~MMAS();
 };
 

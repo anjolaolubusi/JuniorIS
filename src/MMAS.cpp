@@ -30,7 +30,7 @@ MMAS::MMAS(const MMAS& otherMMAS){
 
 
 void MMAS::initWindow(){
-	this->window = new sf::RenderWindow(sf::VideoMode(1152,864), "ACO");
+	this->window = new sf::RenderWindow(sf::VideoMode(1152,864), "Ant Colony Optimization Simulator - (MMAS)");
 	this->window->setFramerateLimit(120);
 	this->window->setVerticalSyncEnabled(false);
 }
@@ -43,24 +43,18 @@ void MMAS::updateSFMLEvents(){
 	while(this->window->pollEvent(this->sfEvent)){
 		ImGui::SFML::ProcessEvent(this->sfEvent);
 		switch (this->sfEvent.type){
-			case sf::Event::Closed:	
+			case sf::Event::Closed:
 				this->window->close();
 				break;
 
 			case sf::Event::MouseButtonReleased:
-				if(this->sfEvent.mouseButton.button == sf::Mouse::Left){	
+				if(this->sfEvent.mouseButton.button == sf::Mouse::Left){
 					//sf::Vector2i mousePos = sf::Mouse::getPosition(*window);
 					//nodeSprite.setPosition ((float)mousePos.x, (float)mousePos.y);
 					//ListOfNodes.push_back(nodeSprite);
 				}
 
 			case sf::Event::KeyReleased:
-				if(this->sfEvent.key.code == sf::Keyboard::P){
-					this->PrintPheroTable();
-				}
-				if(this->sfEvent.key.code == sf::Keyboard::Space){
-					this->hasBegun = !this->hasBegun;
-				}
 
 			default:
 				break;
@@ -71,58 +65,8 @@ void MMAS::updateSFMLEvents(){
 void MMAS::update(){
 	this->updateSFMLEvents();
 	ImGui::SFML::Update(*window, dtClock.restart());
-	//Move ant to the next node or update PheromoenTable
-	vector<shared_ptr<Ant>>::iterator ant_itr;
-	if(inter_num < 1000 && hasBegun){
-		antAtEnd = 0;
-	for(ant_itr=ants.begin(); ant_itr!=ants.end(); ant_itr++){
-		if(!ant_itr->get()->IsAntFin()){
-		if(ant_itr->get()->GraphAntAtNode(graphMap.GetEndX(), graphMap.GetEndY())){
-			antAtEnd++;	
-		}else{
-			if(ant_itr->get()->GraphAntAtNode()){
-			//antAtEnd = 0;
-			ant_itr->get()->MoveAntToEndNode(graphMap);
-			ant_itr->get()->update(dt);
-			}else{
-			ant_itr->get()->update(dt);
-			}
-		}
-		}else{
-		antAtEnd++;
-		}
-	}
-	if(antAtEnd == ant_count){		
-		vector<shared_ptr<Ant>>::iterator choice_itr = ants.begin();
-		double MaxInfo = -99999.0;
-		double test_value = 0;
-		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
-			test_value = ant_itr->get()->GetValueOfPath();
-			if(MaxInfo < test_value && ant_itr->get()->GetKeysVisited().back()->GetX2() == graphMap.GetEndX() && ant_itr->get()->GetKeysVisited().back()->GetY2() == graphMap.GetEndY()){
-				MaxInfo = test_value;
-				choice_itr = ant_itr;
-			}
-		}
-
-		graphMap.SetBestPath(choice_itr->get()->GetKeysVisited());
-		graphMap.EvapouratePhero();
-		graphMap.UpdatePhero(inter_num);
-
-		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
-			ant_itr->get()->MoveAntToStartNode(graphMap);
-		}
-
-		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
-			ant_itr->get()->EmptyKV();
-		}
-		//this->PrintPheroTable();
-		//cout << endl;
-		inter_num++;
-	}
-	}
-	ImGui::Begin("Hello, world!");
-        ImGui::Button("Look at this pretty button");
-        ImGui::End();
+	HandleGUI();
+	StartAlgorithm();
 }
 
 void MMAS::render(){
@@ -139,7 +83,7 @@ void MMAS::render(){
 	vector<shared_ptr<Ant>>::iterator ant_itr;
 	for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
 		ant_itr->get()->render(this->window);
-	}	
+	}
 	ImGui::SFML::Render(*window);
 	this->window->display();
 }
@@ -154,10 +98,9 @@ void MMAS::run(){
 	}
 }
 
-void MMAS::AddNode(const int x, const int y){	
+void MMAS::AddNode(const int x, const int y){
 	sf::Sprite nodeSprite(nodeTex);
 	nodeSprite.setPosition(x, y);
-	cout << "POS CRE" << endl;
 	ListOfNodes.push_back(nodeSprite);
 }
 
@@ -184,22 +127,21 @@ void MMAS::RemoveEdge(const PheroKey& key){
 
 void MMAS::SetStartNode(const int x, const int y){
 	graphMap.SetStartNode(x, y);
-	for(int i = 0; i < ant_count; i++){	
+	for(int i = 0; i < ant_count; i++){
 		ants.push_back(make_shared<Ant>(graphMap.GetStartX(), graphMap.GetStartY()));
 	}
 	sf::Sprite nodeSprite(nodeTex);
 	nodeSprite.setPosition(x, y);
-	cout << "START POS CRE" << endl;
 	ListOfNodes.push_back(nodeSprite);
 	vector<shared_ptr<Ant>>::iterator ant_itr;
 	for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
 		random_device dev;
 		mt19937 rng(dev());
-		uniform_real_distribution<double> dist(1.0, 3.5);
+		uniform_real_distribution<double> dist(1.0, 3.0);
 		float ant_speed = dist(rng);
 		ant_itr->get()->SetSpeed(ant_speed);
-	}	
-	
+	}
+
 	StartHasBeenSet = true;
 }
 
@@ -208,7 +150,6 @@ void MMAS::SetEndNode(const int x, const int y){
 	sf::Sprite nodeSprite(nodeTex);
 	nodeSprite.setPosition(x, y);
 	ListOfNodes.push_back(nodeSprite);
-	cout << "END POS CRE" << endl;
 	EndHasBeenSet = true;
 }
 
@@ -230,9 +171,130 @@ void MMAS::PrintPheroTable(){
 	graphMap.PrintPheroTable();
 }
 
+void MMAS::HandleGUI(){
+	ImGui::SetWindowSize("Controls", ImVec2(500,125), ImGuiCond_FirstUseEver);
+	ImGui::SetWindowPos("Controls", ImVec2(20,20), ImGuiCond_FirstUseEver);
+	ImGui::SetWindowPos("Results", ImVec2(20,165), ImGuiCond_FirstUseEver);
+	ImGui::Begin("Controls");
+	if(ImGui::Button("Start Simulation")){
+		graphMap.StartOver();
+		inter_num = 0;
+		hasBegun = true;
+	}
+
+	if(ImGui::Button("Pause Simulation")){
+		hasBegun = false;
+	}
+
+	if(ImGui::Button("End Simulation")){
+		vector<shared_ptr<Ant>>::iterator ant_itr;
+		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
+			ant_itr->get()->MoveAntToStartNode(graphMap);
+		}
+
+		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
+			ant_itr->get()->EmptyKV();
+		}
+		inter_num = 0;
+		hasBegun = false;
+	}
+
+	if(HasBestPathBeenFound()){
+        if(ImGui::Button("Repeat Simulation")){
+            hasBegun = true;
+        }
+	}
+
+	ImGui::SliderFloat("Evaporation Constant", &PheroConst, 0.0f, 1.0f);
+	graphMap.SetEvapourationRate(PheroConst);
+	ImGui::End();
+
+	ImGui::Begin("Results");
+	ImGui::Text("Number of iterations: %d", inter_num);
+	ImGui::End();
+
+}
 
 void MMAS::StartAlgorithm(){
+	vector<shared_ptr<Ant>>::iterator ant_itr;
+	if(!HasBestPathBeenFound() && hasBegun){
+		antAtEnd = 0;
+	for(ant_itr=ants.begin(); ant_itr!=ants.end(); ant_itr++){
+		if(!ant_itr->get()->IsAntFin()){
+		if(ant_itr->get()->GraphAntAtNode(graphMap.GetEndX(), graphMap.GetEndY())){
+			antAtEnd++;
+		}else{
+			if(ant_itr->get()->GraphAntAtNode()){
+			//antAtEnd = 0;
+			ant_itr->get()->MoveAntToEndNode(graphMap);
+			ant_itr->get()->update(dt);
+			}else{
+			ant_itr->get()->update(dt);
+			}
+		}
+		}else{
+		antAtEnd++;
+		}
+	}
+	if(antAtEnd == ant_count){
+		vector<shared_ptr<Ant>>::iterator choice_itr = ants.begin();
+		double MaxInfo = -99999.0;
+		double test_value = 0;
+		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
+			test_value = ant_itr->get()->GetValueOfPath();
+			if(MaxInfo < test_value && ant_itr->get()->GetKeysVisited().back()->GetX2() == graphMap.GetEndX() && ant_itr->get()->GetKeysVisited().back()->GetY2() == graphMap.GetEndY()){
+				MaxInfo = test_value;
+				choice_itr = ant_itr;
+			}
+		}
 
+		graphMap.SetBestPath(choice_itr->get()->GetKeysVisited());
+		graphMap.EvapouratePhero();
+		graphMap.UpdatePhero(inter_num);
+
+
+		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
+			ant_itr->get()->MoveAntToStartNode(graphMap);
+		}
+
+		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
+			ant_itr->get()->EmptyKV();
+		}
+		//this->PrintPheroTable();
+		//cout << endl;
+		inter_num++;
+	}
+	}else{
+	    for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
+			ant_itr->get()->MoveAntToStartNode(graphMap);
+		}
+
+		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
+			ant_itr->get()->EmptyKV();
+		}
+		hasBegun = false;
+	}
+}
+
+bool MMAS::HasBestPathBeenFound(){
+    if(!graphMap.GetBestPathSoFar().empty()){
+    vector<shared_ptr<Ant>>::iterator ant_itr = ants.begin();
+    for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
+        if(ant_itr->get()->GetKeysVisited() != graphMap.GetBestPathSoFar()){
+            return false;
+            break;
+        }
+    }
+    for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
+        if(!ant_itr->get()->GraphAntAtNode()){
+            return false;
+            break;
+        }
+    }
+    return true;
+    }else{
+    return false;
+    }
 }
 
 MMAS::~MMAS(){

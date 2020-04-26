@@ -77,6 +77,10 @@ vector<shared_ptr<PheroKey>> GraphMap::GetBestPathOfIter() {
 	return BestPathOfIter;
 }
 
+vector<shared_ptr<PheroKey>> GraphMap::GetBestPathSoFar(){
+	return BestPathSoFar;
+}
+
 
 void GraphMap::PrintPheroTable(){
 	vector<shared_ptr<PheroKey>>::iterator key_itr;
@@ -86,14 +90,14 @@ void GraphMap::PrintPheroTable(){
 	cout << "Best Path So Far: " << endl;
 	for(key_itr=BestPathSoFar.begin(); key_itr != BestPathSoFar.end(); key_itr++){
 		cout << **key_itr << " " << endl;
-	}	
+	}
 }
 
 void GraphMap::PrintPheroTable( vector<shared_ptr<PheroKey>> p_map){
 	vector<shared_ptr<PheroKey>>::iterator key_itr;
 	for(key_itr=p_map.begin(); key_itr != p_map.end(); key_itr++ ){
 		cout << **key_itr << " " << endl;
-	}	
+	}
 }
 
 void GraphMap::AddEdge(const int x1, const int y1, const int x2, const int y2){
@@ -134,10 +138,10 @@ void GraphMap::EvapouratePhero(const double e_value){
 	vector<shared_ptr<PheroKey>>::iterator key_itr;
 	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++ ){
 		double NewPheroValue = key_itr->get()->GetPhero() * (1 - e_value);
-		if(MinPhero <= NewPheroValue){	
+		if(MinPhero <= NewPheroValue){
 			key_itr->get()->ReplacePhero(NewPheroValue);
 		}
-	}	
+	}
 }
 
 
@@ -145,10 +149,10 @@ void GraphMap::EvapouratePhero(){
 	vector<shared_ptr<PheroKey>>::iterator key_itr;
 	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++ ){
 		double NewPheroValue = key_itr->get()->GetPhero() * (1 - evap_rate);
-		if(MinPhero <= NewPheroValue){	
+		if(MinPhero <= NewPheroValue){
 			key_itr->get()->ReplacePhero(NewPheroValue);
 		}
-	}	
+	}
 }
 
 vector<shared_ptr<PheroKey>> GraphMap::GetAllEdges(const int x1, const int y1){
@@ -159,7 +163,7 @@ vector<shared_ptr<PheroKey>> GraphMap::GetAllEdges(const int x1, const int y1){
 			temp_table.emplace_back(*key_itr);
 		}
 	}
-	return temp_table;	
+	return temp_table;
 }
 
 
@@ -193,7 +197,7 @@ void GraphMap::SetBestPath(vector<shared_ptr<PheroKey>> BestPath){
 	for(key_itr=BestPathOfIter.begin(); key_itr != BestPathOfIter.end(); key_itr++){
 		InvOfIter += 1.0/key_itr->get()->GetDistanceBetweenPoints();
 	}
-	
+
 	if(!BestPathSoFar.empty()){
 		for(key_itr=BestPathSoFar.begin(); key_itr != BestPathSoFar.end(); key_itr++){
 			InvOfBest += 1.0/key_itr->get()->GetDistanceBetweenPoints();
@@ -206,3 +210,15 @@ void GraphMap::SetBestPath(vector<shared_ptr<PheroKey>> BestPath){
 	}
 }
 
+void GraphMap::SetEvapourationRate(double NewRate){
+	evap_rate = NewRate;
+}
+
+void GraphMap::StartOver(){
+    BestPathOfIter.clear();
+    BestPathOfIter.clear();
+    vector<shared_ptr<PheroKey>>::iterator key_itr;
+    for(key_itr=PheroTable.begin();key_itr != PheroTable.end(); key_itr++){
+        key_itr->get()->ReplacePhero(DefaultPhero);
+    }
+}

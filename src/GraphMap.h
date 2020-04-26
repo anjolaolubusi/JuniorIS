@@ -1,7 +1,6 @@
 #ifndef GRAPHMAP_H
 #define GRAPHMAP_H
 
-#include <string.h>
 #include "PheroKey.h"
 #include <vector>
 #include <memory>
@@ -12,7 +11,7 @@ private:
 	int width; // Width of the grid
 	int height; // Height of the grid
 	float evap_rate = 0.5; //Evapouration Rate
-	double DefaultPhero = 1.0; //Default pheromone number MUST NOT BE ZERO
+	double DefaultPhero = 10.0; //Default pheromone number MUST NOT BE ZERO
 	std::vector<std::shared_ptr<PheroKey>> PheroTable;
 	int StartX = -1; //Initial Start Node X-Coordinate
 	int StartY = -1; //Initial Start Node Y-Coordinate
@@ -37,6 +36,7 @@ public:
 	int GetEndX(); //Return position of End Node
 	int GetEndY();
 	std::vector<std::shared_ptr<PheroKey>> GetBestPathOfIter();
+    std::vector<std::shared_ptr<PheroKey>> GetBestPathSoFar();
 	void PrintStateGrid(); //Prints the State Grid
 	void PrintPheroTable(); //Print the Pheromone Table
 	void PrintPheroTable(std::vector<std::shared_ptr<PheroKey>> p_map); //Print the Pheromone Table
@@ -45,10 +45,12 @@ public:
 	void UpdatePhero(int iter_number);
 	void EvapouratePhero(const double value); //Evapourates Table by specified evapouration value
 	void EvapouratePhero();//Evapourates Table by default evapouration value
-	std::vector<std::shared_ptr<PheroKey>> GetAllEdges(const int x1, const int y1); //Gets all edges around a point 
+	std::vector<std::shared_ptr<PheroKey>> GetAllEdges(const int x1, const int y1); //Gets all edges around a point
 	void SetStartNode(const int x, const int y); //Sets the start node
 	void SetEndNode(const int x, const int y); //Sets the end node
 	void RemoveEdge(const PheroKey& key); //Removes edge from PheroTable
 	void SetBestPath(std::vector<std::shared_ptr<PheroKey>> BestPath);
+	void SetEvapourationRate(double NewRate);
+	void StartOver();
 };
 #endif
