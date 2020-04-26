@@ -44,6 +44,7 @@ private:
 	bool hasBegun = false;
 	float radius = 50.0f;
 	float PheroConst = 0.5;
+	float SnowProb = 1.0f/ListOfEdges.size();
 
 	std::vector<sf::Sprite> ListOfNodes;
 	std::vector<PheroEdge> ListOfEdges;

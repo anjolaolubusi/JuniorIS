@@ -73,7 +73,7 @@ int GraphMap::GetEndY(){
 	return EndY;
 }
 
-double GraphMap::GetMaxPhero(){
+double GraphMap::GetMaxPhero() const{
     return MaxPhero;
 }
 
@@ -152,9 +152,11 @@ void GraphMap::EvapouratePhero(const double e_value){
 void GraphMap::EvapouratePhero(){
 	vector<shared_ptr<PheroKey>>::iterator key_itr;
 	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++ ){
-		double NewPheroValue = key_itr->get()->GetPhero() * (1 - evap_rate);
-		if(MinPhero <= NewPheroValue){
-			key_itr->get()->ReplacePhero(NewPheroValue);
+		if(key_itr->get()->GetWalkableState()){
+            double NewPheroValue = key_itr->get()->GetPhero() * (1 - evap_rate);
+            if(MinPhero <= NewPheroValue){
+                key_itr->get()->ReplacePhero(NewPheroValue);
+            }
 		}
 	}
 }
@@ -163,7 +165,7 @@ vector<shared_ptr<PheroKey>> GraphMap::GetAllEdges(const int x1, const int y1){
 	vector<shared_ptr<PheroKey>> temp_table;
 	vector<shared_ptr<PheroKey>>::iterator key_itr;
 	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++ ){
-		if((key_itr->get()->GetX1() == x1 && key_itr->get()->GetY1() == y1) || (key_itr->get()->GetX2() == x1 && key_itr->get()->GetY2() == y1)){
+		if( key_itr->get()->GetWalkableState() && ((key_itr->get()->GetX1() == x1 && key_itr->get()->GetY1() == y1) || (key_itr->get()->GetX2() == x1 && key_itr->get()->GetY2() == y1)) ){
 			temp_table.emplace_back(*key_itr);
 		}
 	}
@@ -224,5 +226,48 @@ void GraphMap::StartOver(){
     vector<shared_ptr<PheroKey>>::iterator key_itr;
     for(key_itr=PheroTable.begin();key_itr != PheroTable.end(); key_itr++){
         key_itr->get()->ReplacePhero(DefaultPhero);
+        key_itr->get()->SetWalkableState(true);
+    }
+}
+
+void GraphMap::SetSnowProb(double newProb){
+    SnowProb = newProb;
+}
+
+double GraphMap::GetSnowProb() const{
+    return SnowProb;
+}
+
+void GraphMap::CanadianSnow(){
+    vector<shared_ptr<PheroKey>>::iterator key_itr;
+    for(key_itr=PheroTable.begin();key_itr != PheroTable.end(); key_itr++){
+        random_device dev;
+		mt19937 rng(dev());
+		uniform_real_distribution<double> dist(0.0, 1.0);
+		double choice_prob = dist(rng);
+		if(choice_prob <= SnowProb){
+            key_itr->get()->SetWalkableState(false);
+		}else{
+            key_itr->get()->SetWalkableState(true);
+		}
+    }
+}
+
+bool GraphMap::GetWalkable(int x1, int y1, int x2, int y2) const{
+    PheroKey key = PheroKey(x1, y1, x2, y2, 0);
+    vector<shared_ptr<PheroKey>>::const_iterator key_itr;
+    for(key_itr=PheroTable.begin();key_itr != PheroTable.end(); key_itr++){
+        if(**key_itr == key){
+            return key_itr->get()->GetWalkableState();
+            break;
+        }
+    }
+    return false;
+}
+
+void GraphMap::MakeGraphWalkable(){
+    vector<shared_ptr<PheroKey>>::const_iterator key_itr;
+    for(key_itr=PheroTable.begin();key_itr != PheroTable.end(); key_itr++){
+            key_itr->get()->SetWalkableState(true);
     }
 }

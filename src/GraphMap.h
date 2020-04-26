@@ -4,6 +4,8 @@
 #include "PheroKey.h"
 #include <vector>
 #include <memory>
+#include <random>
+
 class GraphMap
 {
 private:
@@ -18,6 +20,7 @@ private:
 	int EndY = -1; //Initial End Node Y-Coordinate
 	double MinPhero = 0.000005;
 	double MaxPhero = 10;
+	double SnowProb = 0.5;
 	std::vector<std::shared_ptr<PheroKey>> BestPathSoFar;
 	std::vector<std::shared_ptr<PheroKey>> BestPathOfIter;
 
@@ -34,7 +37,7 @@ public:
 	int GetStartY();
 	int GetEndX(); //Return position of End Node
 	int GetEndY();
-	double GetMaxPhero();
+	double GetMaxPhero() const;
 	std::vector<std::shared_ptr<PheroKey>> GetBestPathOfIter();
     std::vector<std::shared_ptr<PheroKey>> GetBestPathSoFar();
 	void PrintStateGrid(); //Prints the State Grid
@@ -52,6 +55,10 @@ public:
 	void SetBestPath(std::vector<std::shared_ptr<PheroKey>> BestPath);
 	void SetEvapourationRate(double NewRate);
 	void StartOver();
-
+	void SetSnowProb(double newProb);
+	double GetSnowProb() const;
+	void CanadianSnow();
+	bool GetWalkable(int x1, int y1, int x2, int y2) const;
+	void MakeGraphWalkable();
 };
 #endif

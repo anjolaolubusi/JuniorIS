@@ -55,7 +55,9 @@ void MMAS::updateSFMLEvents(){
 				}
 
 			case sf::Event::KeyReleased:
-
+                if(this->sfEvent.key.code == sf::Keyboard::P){
+					this->graphMap.CanadianSnow();
+				}
 			default:
 				break;
 		}
@@ -79,7 +81,9 @@ void MMAS::render(){
 	}
 	vector<PheroEdge>::iterator rect_itr;
 	for(rect_itr=ListOfEdges.begin(); rect_itr != ListOfEdges.end(); rect_itr++){
+		if(graphMap.GetWalkable(rect_itr->x1, rect_itr->y1, rect_itr->x2, rect_itr->y2)){
 		window->draw(rect_itr->line);
+		}
 	}
 	vector<shared_ptr<Ant>>::iterator ant_itr;
 	for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
@@ -122,6 +126,7 @@ void MMAS::AddEdge(const int x1, const int y1, const int x2, const int y2){
 	pe.line = line;
 	ListOfEdges.push_back(pe);
 	graphMap.AddEdge(x1, y1, x2, y2);
+	SnowProb = 1.0f/ListOfEdges.size();
 }
 
 void MMAS::AddEdge(const PheroKey& key){
@@ -179,12 +184,13 @@ void MMAS::PrintPheroTable(){
 }
 
 void MMAS::HandleGUI(){
-	ImGui::SetWindowSize("Controls", ImVec2(500,125), ImGuiCond_FirstUseEver);
+	ImGui::SetWindowSize("Controls", ImVec2(500,200), ImGuiCond_FirstUseEver);
 	ImGui::SetWindowPos("Controls", ImVec2(20,20), ImGuiCond_FirstUseEver);
-	ImGui::SetWindowPos("Results", ImVec2(20,165), ImGuiCond_FirstUseEver);
+	ImGui::SetWindowPos("Results", ImVec2(20,190), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Controls");
 	if(ImGui::Button("Start Simulation")){
 		graphMap.StartOver();
+		graphMap.CanadianSnow();
 		inter_num = 0;
 		hasBegun = true;
 	}
@@ -203,17 +209,18 @@ void MMAS::HandleGUI(){
 			ant_itr->get()->EmptyKV();
 		}
 		inter_num = 0;
+		graphMap.MakeGraphWalkable();
 		hasBegun = false;
 	}
 
-	if(HasBestPathBeenFound()){
-        if(ImGui::Button("Repeat Simulation")){
-            hasBegun = true;
-        }
-	}
+	ImGui::InputInt("Number of Ants", &ant_count);
 
 	ImGui::SliderFloat("Evaporation Constant", &PheroConst, 0.0f, 1.0f);
 	graphMap.SetEvapourationRate(PheroConst);
+
+	ImGui::SliderFloat("Blocked Edge Probability", &SnowProb, 0.0f, 1.0f);
+	graphMap.SetSnowProb(SnowProb);
+
 	ImGui::End();
 
 	ImGui::Begin("Results");
@@ -249,7 +256,7 @@ void MMAS::StartAlgorithm(){
 		double test_value = 0;
 		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
 			test_value = ant_itr->get()->GetValueOfPath();
-			if(MaxInfo < test_value && ant_itr->get()->GetKeysVisited().back()->GetX2() == graphMap.GetEndX() && ant_itr->get()->GetKeysVisited().back()->GetY2() == graphMap.GetEndY()){
+			if(MaxInfo < test_value && ant_itr->get()->GetKeysVisited().back()->GetX2() == graphMap.GetEndX() && ant_itr->get()->GetKeysVisited().back()->GetY2() == graphMap.GetEndY() && ant_itr->get()->IsPathWalkable()){
 				MaxInfo = test_value;
 				choice_itr = ant_itr;
 			}
@@ -307,7 +314,7 @@ bool MMAS::HasBestPathBeenFound(){
 void MMAS::UpdatePathColours(){
     vector<PheroEdge>::iterator rect_itr;
 	for(rect_itr=ListOfEdges.begin(); rect_itr != ListOfEdges.end(); rect_itr++){
-        rect_itr->line.setFillColor(sf::Color(0,0,0, 255 * graphMap.GetPhero(rect_itr->x1, rect_itr->y1, rect_itr->x2, rect_itr->y2)/10 ));
+        rect_itr->line.setFillColor(sf::Color(0,0,0, 255 * graphMap.GetPhero(rect_itr->x1, rect_itr->y1, rect_itr->x2, rect_itr->y2) ));
 	}
 }
 

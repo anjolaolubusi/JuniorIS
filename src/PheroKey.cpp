@@ -76,7 +76,7 @@ bool PheroKey::operator==(const PheroKey& key) const{
 }
 
 ostream& operator<<(ostream& out, const PheroKey& key){
-	return out << "((" << key.x1 << "," << key.y1 << "),(" << key.x2 << "," << key.y2 << "))" << " Pheromone Value: " << key.GetPhero() << " Heuristic Value: " << 1.0/key.GetDistanceBetweenPoints(); 
+	return out << "((" << key.x1 << "," << key.y1 << "),(" << key.x2 << "," << key.y2 << "))" << " Pheromone Value: " << key.GetPhero() << " Heuristic Value: " << 1.0/key.GetDistanceBetweenPoints() << " Walkable: " << key.GetWalkableState();
 }
 
 bool PheroKey::operator < (const PheroKey& key) const{
@@ -89,6 +89,9 @@ bool PheroKey::operator < (const PheroKey& key) const{
 	}
 }
 
+PheroKey::~PheroKey(){
+}
+
 void PheroKey::SetDisBetweenPoint(const double NewDis){
 	DisBetweenPoints = NewDis;
 }
@@ -97,6 +100,10 @@ void PheroKey::ResetDisBetweenPoint(){
 	DisBetweenPoints = sqrt( (x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
 }
 
-PheroKey::~PheroKey(){
+bool PheroKey::GetWalkableState() const{
+    return IsWalkable;
 }
 
+void PheroKey::SetWalkableState(bool newState){
+    IsWalkable = newState;
+}

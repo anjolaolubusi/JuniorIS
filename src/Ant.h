@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include "GraphMap.h"
-#include <random>
 #include <SFML/Graphics.hpp>
 
 
@@ -51,5 +50,6 @@ public:
 	bool GraphAntAtNode(int x, int y);
 	void SetSpeed(double speed);
 	bool IsAntFin();
+	bool IsPathWalkable();
 };
 #endif

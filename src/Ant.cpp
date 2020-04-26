@@ -17,7 +17,7 @@ Ant::Ant(const int new_x, const int new_y){
 	ant_y = new_y;
 	this->shape.setSize(sf::Vector2f(10.f, 10.f));
 	this->shape.setPosition (ant_x, ant_y);
-	this->shape.setFillColor (sf::Color::Blue);	
+	this->shape.setFillColor (sf::Color::Blue);
 	this->shape.setOrigin (-12.f, -12.f);
 }
 
@@ -76,17 +76,15 @@ void Ant::SetY(const int new_y){
 	ant_y = new_y;
 }
 
-void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){	
+void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 	vector<shared_ptr<PheroKey>>::iterator result;
 	vector<shared_ptr<PheroKey>> PossibleEdges;
 	PossibleEdges = gmap.GetAllEdges(ant_x, ant_y);
 	vector<shared_ptr<PheroKey>>::iterator choice;
 
-
 	if(PossibleEdges.empty()){
 		isFin = true;
 	}
-
 
 	for(choice=keys_visited.begin(); choice!=keys_visited.end(); choice++){
 		vector<shared_ptr<PheroKey>>::iterator temp_remover;
@@ -101,17 +99,22 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 			}
 		}
 	}
-	
+
+    if(PossibleEdges.empty()){
+		isFin = true;
+	}
 
 	if(!isFin && PossibleEdges.size() > 0){
 		double pSet[PossibleEdges.size()];
 		double TotalPhero = 0;
 		int i = 0;
+
+
 		for(result=PossibleEdges.begin();result != PossibleEdges.end();result++){
 			double phero_temp = gmap.GetPhero(**result) * (1/result->get()->GetDistanceBetweenPoints());
 			pSet[i] = phero_temp;
 			TotalPhero += phero_temp;
-			i += 1;	
+			i += 1;
 		}
 
 		double cum = 0;
@@ -143,7 +146,7 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 }
 
 void Ant::MoveAntToStartNode(GraphMap& gmap){
-	ant_x = gmap.GetStartX();	
+	ant_x = gmap.GetStartX();
 	ant_y = gmap.GetStartY();
 	this->shape.setPosition (gmap.GetStartX(), gmap.GetStartY());
 	isFin = false;
@@ -187,7 +190,7 @@ void Ant::PrintAntInfo(GraphMap& gmap) const{
 Ant::~Ant(){
 }
 
-void Ant::update(const float& dt){	
+void Ant::update(const float& dt){
 	if(!this->GraphAntAtNode()){
 		if(this->shape.getPosition().x != ant_x){
 		this->moveX();
@@ -230,4 +233,15 @@ void Ant::SetSpeed(double speed){
 
 bool Ant::IsAntFin(){
 	return this->isFin;
+}
+
+bool Ant::IsPathWalkable(){
+    vector<shared_ptr<PheroKey>>::const_iterator itr;
+	for(itr=keys_visited.begin(); itr!=keys_visited.end(); itr++){
+		if(!itr->get()->GetWalkableState()){
+            return false;
+            break;
+		}
+	}
+	return true;
 }

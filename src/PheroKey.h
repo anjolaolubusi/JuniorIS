@@ -24,6 +24,8 @@ public:
 	~PheroKey(); //Destructor
 	void SetDisBetweenPoint(const double NewDis);
 	void ResetDisBetweenPoint();
+	bool GetWalkableState() const;
+	void SetWalkableState(bool newState);
 private:
 	int x1; //X Coordinate of First Point
 	int y1; //Y Coordinate of First Point
@@ -31,7 +33,7 @@ private:
 	int y2; //Y Coordinate of Second Point
     mutable double pheroCount;
 	double DisBetweenPoints;
-	bool IsWalkable;
+	bool IsWalkable = true;
 };
 
 #endif
