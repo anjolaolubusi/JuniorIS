@@ -73,6 +73,10 @@ int GraphMap::GetEndY(){
 	return EndY;
 }
 
+double GraphMap::GetMaxPhero(){
+    return MaxPhero;
+}
+
 vector<shared_ptr<PheroKey>> GraphMap::GetBestPathOfIter() {
 	return BestPathOfIter;
 }

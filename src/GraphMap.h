@@ -4,7 +4,6 @@
 #include "PheroKey.h"
 #include <vector>
 #include <memory>
-
 class GraphMap
 {
 private:
@@ -35,6 +34,7 @@ public:
 	int GetStartY();
 	int GetEndX(); //Return position of End Node
 	int GetEndY();
+	double GetMaxPhero();
 	std::vector<std::shared_ptr<PheroKey>> GetBestPathOfIter();
     std::vector<std::shared_ptr<PheroKey>> GetBestPathSoFar();
 	void PrintStateGrid(); //Prints the State Grid
@@ -52,5 +52,6 @@ public:
 	void SetBestPath(std::vector<std::shared_ptr<PheroKey>> BestPath);
 	void SetEvapourationRate(double NewRate);
 	void StartOver();
+
 };
 #endif

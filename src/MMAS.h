@@ -10,7 +10,27 @@
 #include <SFML/System.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
-#include <string>
+
+struct PheroEdge{
+    float x1;
+    float y1;
+    float x2;
+    float y2;
+	sf::RectangleShape line;
+	PheroEdge(const PheroEdge& otherPE){
+	x1 = otherPE.x1;
+	x2 = otherPE.x2;
+	y1 = otherPE.y1;
+	y2 = otherPE.y2;
+	line = otherPE.line;
+	}
+	PheroEdge(){
+    x1 = -1;
+    x2 = -1;
+    y1 = -1;
+    y2 = -1;
+	}
+};
 
 class MMAS{
 private:
@@ -26,7 +46,7 @@ private:
 	float PheroConst = 0.5;
 
 	std::vector<sf::Sprite> ListOfNodes;
-	std::vector<sf::RectangleShape> ListOfEdges;
+	std::vector<PheroEdge> ListOfEdges;
 	sf::Texture nodeTex;
 	sf::RenderWindow* window;
 	sf::Event sfEvent;
@@ -60,6 +80,7 @@ public:
 	void HandleGUI();
 	void StartAlgorithm();
 	bool HasBestPathBeenFound();
+	void UpdatePathColours();
 	~MMAS();
 };
 

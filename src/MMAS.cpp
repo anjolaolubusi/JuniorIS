@@ -67,6 +67,7 @@ void MMAS::update(){
 	ImGui::SFML::Update(*window, dtClock.restart());
 	HandleGUI();
 	StartAlgorithm();
+	UpdatePathColours();
 }
 
 void MMAS::render(){
@@ -76,9 +77,9 @@ void MMAS::render(){
 	for(node_itr=ListOfNodes.begin(); node_itr != ListOfNodes.end(); node_itr++){
 		window->draw(*node_itr);
 	}
-	vector<sf::RectangleShape>::iterator rect_itr;
+	vector<PheroEdge>::iterator rect_itr;
 	for(rect_itr=ListOfEdges.begin(); rect_itr != ListOfEdges.end(); rect_itr++){
-		window->draw(*rect_itr);
+		window->draw(rect_itr->line);
 	}
 	vector<shared_ptr<Ant>>::iterator ant_itr;
 	for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
@@ -113,7 +114,13 @@ void MMAS::AddEdge(const int x1, const int y1, const int x2, const int y2){
 	line.setFillColor (sf::Color::Black);
 	line.rotate (ang);
 	line.setPosition (x1+16, y1+16);
-	ListOfEdges.push_back(line);
+	PheroEdge pe;
+	pe.x1 = x1;
+	pe.x2 = x2;
+	pe.y1 = y1;
+	pe.y2 = y2;
+	pe.line = line;
+	ListOfEdges.push_back(pe);
 	graphMap.AddEdge(x1, y1, x2, y2);
 }
 
@@ -295,6 +302,13 @@ bool MMAS::HasBestPathBeenFound(){
     }else{
     return false;
     }
+}
+
+void MMAS::UpdatePathColours(){
+    vector<PheroEdge>::iterator rect_itr;
+	for(rect_itr=ListOfEdges.begin(); rect_itr != ListOfEdges.end(); rect_itr++){
+        rect_itr->line.setFillColor(sf::Color(0,0,0, 255 * graphMap.GetPhero(rect_itr->x1, rect_itr->y1, rect_itr->x2, rect_itr->y2)/10 ));
+	}
 }
 
 MMAS::~MMAS(){
