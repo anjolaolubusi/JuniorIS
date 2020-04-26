@@ -214,6 +214,7 @@ void MMAS::HandleGUI(){
 	}
 
 	ImGui::InputInt("Number of Ants", &ant_count);
+	SetNumberOfAnts(ant_count);
 
 	ImGui::SliderFloat("Evaporation Constant", &PheroConst, 0.0f, 1.0f);
 	graphMap.SetEvapourationRate(PheroConst);
@@ -250,7 +251,7 @@ void MMAS::StartAlgorithm(){
 		antAtEnd++;
 		}
 	}
-	if(antAtEnd == ant_count){
+	if(antAtEnd == ants.size()){
 		vector<shared_ptr<Ant>>::iterator choice_itr = ants.begin();
 		double MaxInfo = -99999.0;
 		double test_value = 0;
