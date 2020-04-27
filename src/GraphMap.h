@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <random>
+#include <string>
 
 class GraphMap
 {
@@ -37,6 +38,7 @@ public:
 	int GetStartY();
 	int GetEndX(); //Return position of End Node
 	int GetEndY();
+	double GetMaxOfPheroTable() const;
 	double GetMaxPhero() const;
 	std::vector<std::shared_ptr<PheroKey>> GetBestPathOfIter();
     std::vector<std::shared_ptr<PheroKey>> GetBestPathSoFar();
@@ -60,5 +62,7 @@ public:
 	void CanadianSnow();
 	bool GetWalkable(int x1, int y1, int x2, int y2) const;
 	void MakeGraphWalkable();
+	void ClearBestPath();
+	void ResetPheromoneTable();
 };
 #endif

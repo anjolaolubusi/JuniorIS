@@ -55,9 +55,7 @@ void MMAS::updateSFMLEvents(){
 				}
 
 			case sf::Event::KeyReleased:
-                if(this->sfEvent.key.code == sf::Keyboard::P){
-					this->graphMap.CanadianSnow();
-				}
+
 			default:
 				break;
 		}
@@ -184,15 +182,15 @@ void MMAS::PrintPheroTable(){
 }
 
 void MMAS::HandleGUI(){
-	ImGui::SetWindowSize("Controls", ImVec2(500,200), ImGuiCond_FirstUseEver);
+	ImGui::SetWindowSize("Controls", ImVec2(600,200), ImGuiCond_FirstUseEver);
 	ImGui::SetWindowPos("Controls", ImVec2(20,20), ImGuiCond_FirstUseEver);
-	ImGui::SetWindowPos("Results", ImVec2(20,190), ImGuiCond_FirstUseEver);
+	ImGui::SetWindowPos("Results", ImVec2(650,600), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Controls");
 	if(ImGui::Button("Start Simulation")){
 		graphMap.StartOver();
-		graphMap.CanadianSnow();
 		inter_num = 0;
 		hasBegun = true;
+		HasSnowed = false;
 	}
 
 	if(ImGui::Button("Pause Simulation")){
@@ -210,6 +208,7 @@ void MMAS::HandleGUI(){
 		}
 		inter_num = 0;
 		graphMap.MakeGraphWalkable();
+		graphMap.StartOver();
 		hasBegun = false;
 	}
 
@@ -232,6 +231,14 @@ void MMAS::HandleGUI(){
 
 void MMAS::StartAlgorithm(){
 	vector<shared_ptr<Ant>>::iterator ant_itr;
+	if(HasBestPathBeenFound() && !HasSnowed){
+        graphMap.ClearBestPath();
+        graphMap.ResetPheromoneTable();
+        graphMap.CanadianSnow();
+        UpdatePathColours();
+        HasSnowed = true;
+	}
+
 	if(!HasBestPathBeenFound() && hasBegun){
 		antAtEnd = 0;
 	for(ant_itr=ants.begin(); ant_itr!=ants.end(); ant_itr++){
@@ -277,7 +284,9 @@ void MMAS::StartAlgorithm(){
 		}
 		//this->PrintPheroTable();
 		//cout << endl;
+        if(HasSnowed && !HasBestPathBeenFound()){
 		inter_num++;
+        }
 	}
 	}else{
 	    for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
@@ -315,7 +324,7 @@ bool MMAS::HasBestPathBeenFound(){
 void MMAS::UpdatePathColours(){
     vector<PheroEdge>::iterator rect_itr;
 	for(rect_itr=ListOfEdges.begin(); rect_itr != ListOfEdges.end(); rect_itr++){
-        rect_itr->line.setFillColor(sf::Color(0,0,0, 255 * graphMap.GetPhero(rect_itr->x1, rect_itr->y1, rect_itr->x2, rect_itr->y2) ));
+        rect_itr->line.setFillColor(sf::Color(0,0,0, 255 * (graphMap.GetPhero(rect_itr->x1, rect_itr->y1, rect_itr->x2, rect_itr->y2)/graphMap.GetMaxOfPheroTable()) ));
 	}
 }
 

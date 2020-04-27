@@ -73,6 +73,17 @@ int GraphMap::GetEndY(){
 	return EndY;
 }
 
+double GraphMap::GetMaxOfPheroTable() const{
+    double MAXPhero = -9999;
+    vector<shared_ptr<PheroKey>>::const_iterator key_itr;
+	for(key_itr=PheroTable.begin(); key_itr != PheroTable.end(); key_itr++){
+            if(MAXPhero < key_itr->get()->GetPhero()){
+                MAXPhero = key_itr->get()->GetPhero();
+            }
+	}
+	return MaxPhero;
+}
+
 double GraphMap::GetMaxPhero() const{
     return MaxPhero;
 }
@@ -103,6 +114,7 @@ void GraphMap::PrintPheroTable( vector<shared_ptr<PheroKey>> p_map){
 		cout << **key_itr << " " << endl;
 	}
 }
+
 
 void GraphMap::AddEdge(const int x1, const int y1, const int x2, const int y2){
 	PheroTable.push_back(make_shared<PheroKey>(x1,y1,x2,y2, MaxPhero));
@@ -156,6 +168,8 @@ void GraphMap::EvapouratePhero(){
             double NewPheroValue = key_itr->get()->GetPhero() * (1 - evap_rate);
             if(MinPhero <= NewPheroValue){
                 key_itr->get()->ReplacePhero(NewPheroValue);
+            }else{
+                key_itr->get()->ReplacePhero(MinPhero);
             }
 		}
 	}
@@ -228,6 +242,7 @@ void GraphMap::StartOver(){
         key_itr->get()->ReplacePhero(DefaultPhero);
         key_itr->get()->SetWalkableState(true);
     }
+    MaxPhero = DefaultPhero;
 }
 
 void GraphMap::SetSnowProb(double newProb){
@@ -269,5 +284,16 @@ void GraphMap::MakeGraphWalkable(){
     vector<shared_ptr<PheroKey>>::const_iterator key_itr;
     for(key_itr=PheroTable.begin();key_itr != PheroTable.end(); key_itr++){
             key_itr->get()->SetWalkableState(true);
+    }
+}
+
+void GraphMap::ClearBestPath(){
+    BestPathSoFar.clear();
+}
+
+void GraphMap::ResetPheromoneTable(){
+    vector<shared_ptr<PheroKey>>::const_iterator key_itr;
+    for(key_itr=PheroTable.begin();key_itr != PheroTable.end(); key_itr++){
+            key_itr->get()->ReplacePhero(MaxPhero);
     }
 }
