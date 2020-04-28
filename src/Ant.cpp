@@ -2,6 +2,7 @@
 
 using namespace std;
 
+//Default constructor
 Ant::Ant(){
 	ant_x = 0;
 	ant_y = 0;
@@ -12,6 +13,7 @@ Ant::Ant(){
 	moveSpeed = 1;
 }
 
+// Parameterized constructor
 Ant::Ant(const int new_x, const int new_y){
 	ant_x = new_x;
 	ant_y = new_y;
@@ -21,7 +23,7 @@ Ant::Ant(const int new_x, const int new_y){
 	this->shape.setOrigin (-12.f, -12.f);
 }
 
-
+// Copy Constructor
 Ant::Ant(const Ant& anthony){
 	ant_x = anthony.ant_x;
 	ant_y = anthony.ant_y;
@@ -30,14 +32,17 @@ Ant::Ant(const Ant& anthony){
 	moveSpeed = anthony.moveSpeed;
 }
 
+//Returns x position
 int Ant::GetX() const{
 	return ant_x;
 }
 
+//Returns y position
 int Ant::GetY() const{
 	return ant_y;
 }
 
+//Gets pheromone count of path travelled
 double Ant::GetPheroCount(GraphMap& gmap){
 	double pCount = 0;
 	vector<shared_ptr<PheroKey>>::iterator kv_itr;
@@ -51,6 +56,7 @@ double Ant::GetPheroCount(GraphMap& gmap){
 	return pCount;
 }
 
+//Gets heuristic value of path
 double Ant::GetValueOfPath() const{
 	double ValueOfPath = 0;
 	vector<shared_ptr<PheroKey>>::const_iterator key_itr;
@@ -64,18 +70,22 @@ double Ant::GetValueOfPath() const{
 	}
 }
 
+//Returns path travelled
 vector<shared_ptr<PheroKey>> Ant::GetKeysVisited() const{
 	return keys_visited;
 }
 
+//Sets the x position
 void Ant::SetX(const int new_x){
 	ant_x = new_x;
 }
 
+//Sets the y position
 void Ant::SetY(const int new_y){
 	ant_y = new_y;
 }
 
+//Moves the ant to end node
 void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 	vector<shared_ptr<PheroKey>>::iterator result;
 	vector<shared_ptr<PheroKey>> PossibleEdges;
@@ -145,6 +155,7 @@ void Ant::MoveAntToEndNode(GraphMap& gmap, bool first_run){
 
 }
 
+//Moves the ant to the start node
 void Ant::MoveAntToStartNode(GraphMap& gmap){
 	ant_x = gmap.GetStartX();
 	ant_y = gmap.GetStartY();
@@ -152,16 +163,19 @@ void Ant::MoveAntToStartNode(GraphMap& gmap){
 	isFin = false;
 }
 
+//Check if the ant is at a certain node
 bool Ant::IsAtNode(const int n_x, const int n_y){
 	return (ant_x == n_x && ant_y == n_y && round(this->shape.getPosition().x) == ant_x && round(this->shape.getPosition().y) == ant_y);
 }
 
+//Check if ant is on key
 bool Ant::IsOnKey(const PheroKey& key){
 	vector<shared_ptr<PheroKey>>::reverse_iterator itr;
 	itr = keys_visited.rbegin();
 	return (**itr == key);
 }
 
+//Prints travelled path
 void Ant::PrintVistedKeys() const{
 	vector<shared_ptr<PheroKey>>::const_iterator itr;
 	for(itr=keys_visited.begin(); itr!=keys_visited.end(); itr++){
@@ -169,16 +183,19 @@ void Ant::PrintVistedKeys() const{
 	}
 }
 
+//Empties the node visited vector
 void Ant::EmptyKV(){
 	keys_visited.clear();
 }
 
+//Output overloader
 ostream& operator<<(ostream& out, const Ant& anthony){
 	out << "x: " << anthony.GetX() << " y: " << anthony.GetY() << " Node Visitied: " << endl;
 	anthony.PrintVistedKeys();
 	return out;
 }
 
+//Prints the ant object with the proper pheromone count
 void Ant::PrintAntInfo(GraphMap& gmap) const{
 	cout << "x: " << ant_x << " y: " << ant_y << " Node Visitied: " << endl;
 	vector<shared_ptr<PheroKey>>::const_iterator itr;
@@ -190,6 +207,7 @@ void Ant::PrintAntInfo(GraphMap& gmap) const{
 Ant::~Ant(){
 }
 
+//Updates ant's graphical position
 void Ant::update(const float& dt){
 	if(!this->GraphAntAtNode()){
 		if(this->shape.getPosition().x != ant_x){
@@ -200,6 +218,7 @@ void Ant::update(const float& dt){
 		}
 	}
 }
+
 
 void Ant::render(sf::RenderTarget* target){
 	target->draw(this->shape);

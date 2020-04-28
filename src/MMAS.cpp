@@ -2,18 +2,18 @@
 
 using namespace std;
 
+//Default Constructor
 MMAS::MMAS(){
 	this->initWindow();
 	if(!nodeTex.loadFromFile("../res/node.png")){
 		cout << "Node Texture Failed To Load" << endl;
 	}
-	//nodeSprite = new sf::Sprite(nodeTex);
-	//nodeSprite->setOrigin ((nodeTex.getSize().x * nodeSprite->getScale().x)/2, (nodeTex.getSize().y * nodeSprite->getScale().y)/2);
 	cout << "INIT" << endl;
 	view = window->getDefaultView();
 	ImGui::SFML::Init(*window);
 }
 
+//Parameterized Constructor
 MMAS::MMAS(int startX, int startY, int endX, int endY, int number_of_ants){
 	ant_count = number_of_ants;
 	graphMap.SetStartNode(startX, startY);
@@ -22,23 +22,26 @@ MMAS::MMAS(int startX, int startY, int endX, int endY, int number_of_ants){
 	ImGui::SFML::Init(*window);
 }
 
+//Copy Constructor
 MMAS::MMAS(const MMAS& otherMMAS){
 	ant_count = otherMMAS.ant_count;
 	ants = otherMMAS.ants;
 	graphMap = otherMMAS.graphMap;
 }
 
-
+//Initializes the window
 void MMAS::initWindow(){
 	this->window = new sf::RenderWindow(sf::VideoMode(1152,864), "Ant Colony Optimization Simulator - (MMAS)");
 	this->window->setFramerateLimit(120);
 	this->window->setVerticalSyncEnabled(false);
 }
 
+//Calculate the time between frames
 void MMAS::updateDt(){
 	this->dt = this->dtClock.restart().asSeconds();
 }
 
+//Handles window events
 void MMAS::updateSFMLEvents(){
 	while(this->window->pollEvent(this->sfEvent)){
 		ImGui::SFML::ProcessEvent(this->sfEvent);
@@ -62,6 +65,7 @@ void MMAS::updateSFMLEvents(){
 	}
 }
 
+//Updates the ACO algorithm
 void MMAS::update(){
 	this->updateSFMLEvents();
 	ImGui::SFML::Update(*window, dtClock.restart());
@@ -70,6 +74,7 @@ void MMAS::update(){
 	UpdatePathColours();
 }
 
+//Renders objects to screen
 void MMAS::render(){
 
 	this->window->clear(sf::Color::White);
@@ -91,7 +96,7 @@ void MMAS::render(){
 	this->window->display();
 }
 
-
+// Simulator loop
 void MMAS::run(){
 	while(this->window->isOpen()){
 		this->updateDt();
@@ -101,12 +106,14 @@ void MMAS::run(){
 	}
 }
 
+//Add node to graph
 void MMAS::AddNode(const int x, const int y){
 	sf::Sprite nodeSprite(nodeTex);
 	nodeSprite.setPosition(x, y);
 	ListOfNodes.push_back(nodeSprite);
 }
 
+//Add Edge to graph
 void MMAS::AddEdge(const int x1, const int y1, const int x2, const int y2){
 	//Draw Line
 	float deltaX = x2-x1;
@@ -127,14 +134,17 @@ void MMAS::AddEdge(const int x1, const int y1, const int x2, const int y2){
 	SnowProb = 1.0f/ListOfEdges.size();
 }
 
+//Add Edge to graph
 void MMAS::AddEdge(const PheroKey& key){
 	graphMap.AddEdge(key);
 }
 
+//Remove Edge from graph
 void MMAS::RemoveEdge(const PheroKey& key){
 	graphMap.RemoveEdge(key);
 }
 
+//Sets Start Node
 void MMAS::SetStartNode(const int x, const int y){
 	graphMap.SetStartNode(x, y);
 	for(int i = 0; i < ant_count; i++){
@@ -155,6 +165,7 @@ void MMAS::SetStartNode(const int x, const int y){
 	StartHasBeenSet = true;
 }
 
+//Set End Node
 void MMAS::SetEndNode(const int x, const int y){
 	graphMap.SetEndNode(x, y);
 	sf::Sprite nodeSprite(nodeTex);
@@ -163,6 +174,7 @@ void MMAS::SetEndNode(const int x, const int y){
 	EndHasBeenSet = true;
 }
 
+//Sets the number of ants
 void MMAS::SetNumberOfAnts(const int number_of_ants){
 	int diff = number_of_ants - ant_count;
 	if(diff > 0){
@@ -177,10 +189,12 @@ void MMAS::SetNumberOfAnts(const int number_of_ants){
 	}
 }
 
+//Prints all the edges of the graph
 void MMAS::PrintPheroTable(){
 	graphMap.PrintPheroTable();
 }
 
+//Handles Menu Items
 void MMAS::HandleGUI(){
 	ImGui::SetWindowSize("Controls", ImVec2(600,200), ImGuiCond_FirstUseEver);
 	ImGui::SetWindowPos("Controls", ImVec2(20,20), ImGuiCond_FirstUseEver);
@@ -218,7 +232,7 @@ void MMAS::HandleGUI(){
 	ImGui::SliderFloat("Evaporation Constant", &PheroConst, 0.0f, 1.0f);
 	graphMap.SetEvapourationRate(PheroConst);
 
-	ImGui::SliderFloat("Blocked Edge Probability", &SnowProb, 0.0f, 1.0f);
+	ImGui::InputFloat("Blocked Edge Probability", &SnowProb, 0.0f, 1.0f);
 	graphMap.SetSnowProb(SnowProb);
 
 	ImGui::End();
@@ -229,6 +243,7 @@ void MMAS::HandleGUI(){
 
 }
 
+//Starts the ACO algorithm
 void MMAS::StartAlgorithm(){
 	vector<shared_ptr<Ant>>::iterator ant_itr;
 	if(HasBestPathBeenFound() && !HasSnowed){
@@ -247,7 +262,7 @@ void MMAS::StartAlgorithm(){
 			antAtEnd++;
 		}else{
 			if(ant_itr->get()->GraphAntAtNode()){
-			//antAtEnd = 0;
+			antAtEnd = 0;
 			ant_itr->get()->MoveAntToEndNode(graphMap);
 			ant_itr->get()->update(dt);
 			}else{
@@ -268,12 +283,15 @@ void MMAS::StartAlgorithm(){
 				MaxInfo = test_value;
 				choice_itr = ant_itr;
 			}
-		}
+            if(choice_itr->get()->GetKeysVisited().back()->GetX2() != graphMap.GetEndX() && choice_itr->get()->GetKeysVisited().back()->GetY2() != graphMap.GetEndY() ){
+                    hasBegun = false;
+                    break;
+                }
+			}
 
 		graphMap.SetBestPath(choice_itr->get()->GetKeysVisited());
 		graphMap.EvapouratePhero();
 		graphMap.UpdatePhero(inter_num);
-
 
 		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
 			ant_itr->get()->MoveAntToStartNode(graphMap);
@@ -282,6 +300,8 @@ void MMAS::StartAlgorithm(){
 		for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
 			ant_itr->get()->EmptyKV();
 		}
+
+
 		//this->PrintPheroTable();
 		//cout << endl;
         if(HasSnowed && !HasBestPathBeenFound()){
@@ -289,6 +309,7 @@ void MMAS::StartAlgorithm(){
         }
 	}
 	}else{
+	    if(hasBegun && HasSnowed){
 	    for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
 			ant_itr->get()->MoveAntToStartNode(graphMap);
 		}
@@ -297,16 +318,20 @@ void MMAS::StartAlgorithm(){
 			ant_itr->get()->EmptyKV();
 		}
 		hasBegun = false;
+	    }else{
+	    HasSnowed = false;
+	    }
 	}
 }
 
+//Returns boolean value that represents if the best path has been found
 bool MMAS::HasBestPathBeenFound(){
     if(!graphMap.GetBestPathSoFar().empty()){
+    int AntKeyCount = 0;
     vector<shared_ptr<Ant>>::iterator ant_itr = ants.begin();
     for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
-        if(ant_itr->get()->GetKeysVisited() != graphMap.GetBestPathSoFar()){
-            return false;
-            break;
+        if(ant_itr->get()->GetKeysVisited() == graphMap.GetBestPathSoFar()){
+            AntKeyCount++;
         }
     }
     for(ant_itr=ants.begin(); ant_itr != ants.end(); ant_itr++){
@@ -315,12 +340,16 @@ bool MMAS::HasBestPathBeenFound(){
             break;
         }
     }
+    if(AntKeyCount != ants.size()){
+        return false;
+    }
     return true;
     }else{
     return false;
     }
 }
 
+//Updates the colours of the path
 void MMAS::UpdatePathColours(){
     vector<PheroEdge>::iterator rect_itr;
 	for(rect_itr=ListOfEdges.begin(); rect_itr != ListOfEdges.end(); rect_itr++){

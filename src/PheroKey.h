@@ -7,7 +7,6 @@
 class PheroKey{
 public:
 	PheroKey(); //Default Constructor
-	//PheroKey(const int x1, const int y1, const int x2, const int y2); //Parameterized Constructor
 	PheroKey(const int x1, const int y1, const int x2, const int y2, const double pCount); //Parameterized Constructor
 	PheroKey( const PheroKey& otherkey); //Copy Constructor
 	void UpdatePhero(double NewPheroCount) const;
@@ -23,17 +22,17 @@ public:
 	bool operator < (const PheroKey& key) const; //Operator overloader
 	~PheroKey(); //Destructor
 	void SetDisBetweenPoint(const double NewDis);
-	void ResetDisBetweenPoint();
-	bool GetWalkableState() const;
-	void SetWalkableState(bool newState);
+	void ResetDisBetweenPoint(); //Resets the Distance Between Points
+	bool GetWalkableState() const; //Returns if the edge is walkable
+	void SetWalkableState(bool newState); //Returns sets if the edge walkable
 private:
 	int x1; //X Coordinate of First Point
 	int y1; //Y Coordinate of First Point
 	int x2; //X Coordinate of Second Point
 	int y2; //Y Coordinate of Second Point
-    mutable double pheroCount;
-	double DisBetweenPoints;
-	bool IsWalkable = true;
+    mutable double pheroCount; //Pheromone value of the edge
+	double DisBetweenPoints; //Distance between vertecies of edge
+	bool IsWalkable = true; //Boolean to determine if edge is walkable
 };
 
 #endif
